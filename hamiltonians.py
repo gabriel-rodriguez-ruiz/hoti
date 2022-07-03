@@ -36,14 +36,29 @@ def Hamiltonian_A1u(t, mu, L_x, L_y, Delta):
             -t\tau_z\sigma_0 -
             i\frac{\Delta}{2} \tau_x\sigma_y \right] \vec{c}_{n,m+1} + H.c. \right) 
     """
-    M = np.zeros((4*L_x*L_y, 4*L_x*L_y))
-    for alpha in range(4):
-      for i in range(1, L_x+1):
-        for j in range(1, L_y+1):
-          M[index(i, j, alpha, L_x, L_y), index(i, j, alpha, L_x, L_y)] = -mu
-      for i in range(1, L_x):
-        for j in range(1, L_y+1):      
-          M[index(i, j, alpha, L_x, L_y), index(i+1, j, alpha, L_x, L_y)] = -t
-      for i in range(1, L_x+1):
-        for j in range(1, L_y):      
-          M[index(i, j, alpha, L_x, L_y), index(i, j+1, alpha, L_x, L_y)] = -t
+    M = np.zeros((4*L_x*L_y, 4*L_x*L_y), dtype=complex)
+    for i in range(1, L_x+1):
+      for j in range(1, L_y+1):
+        for alpha in range(4):
+            M[index(i, j, alpha, L_x, L_y), index(i, j, alpha, L_x, L_y)] = -mu/4   # para no duplicar al sumar la traspuesta 
+    for i in range(1, L_x):
+      for j in range(1, L_y+1):      
+        M[index(i, j, 0, L_x, L_y), index(i+1, j, 0, L_x, L_y)] = -t/2
+        M[index(i, j, 1, L_x, L_y), index(i+1, j, 1, L_x, L_y)] = -t/2
+        M[index(i, j, 2, L_x, L_y), index(i+1, j, 2, L_x, L_y)] = t/2
+        M[index(i, j, 3, L_x, L_y), index(i+1, j, 3, L_x, L_y)] = t/2
+        M[index(i, j, 0, L_x, L_y), index(i+1, j, 3, L_x, L_y)] = -1j*Delta/4
+        M[index(i, j, 1, L_x, L_y), index(i+1, j, 2, L_x, L_y)] = -1j*Delta/4
+        M[index(i, j, 2, L_x, L_y), index(i+1, j, 1, L_x, L_y)] = -1j*Delta/4
+        M[index(i, j, 3, L_x, L_y), index(i+1, j, 0, L_x, L_y)] = -1j*Delta/4
+    for i in range(1, L_x+1):
+      for j in range(1, L_y):      
+        M[index(i, j, 0, L_x, L_y), index(i, j+1, 0, L_x, L_y)] = -t/2
+        M[index(i, j, 1, L_x, L_y), index(i, j+1, 1, L_x, L_y)] = -t/2
+        M[index(i, j, 2, L_x, L_y), index(i, j+1, 2, L_x, L_y)] = t/2
+        M[index(i, j, 3, L_x, L_y), index(i, j+1, 3, L_x, L_y)] = t/2
+        M[index(i, j, 0, L_x, L_y), index(i, j+1, 3, L_x, L_y)] = -Delta/4
+        M[index(i, j, 1, L_x, L_y), index(i, j+1, 2, L_x, L_y)] = Delta/4
+        M[index(i, j, 2, L_x, L_y), index(i, j+1, 1, L_x, L_y)] = -Delta/4
+        M[index(i, j, 3, L_x, L_y), index(i, j+1, 0, L_x, L_y)] = Delta/4
+    return M + M.conj().T
