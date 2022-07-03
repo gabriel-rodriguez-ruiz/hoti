@@ -62,3 +62,25 @@ def Hamiltonian_A1u(t, mu, L_x, L_y, Delta):
         M[index(i, j, 2, L_x, L_y), index(i, j+1, 1, L_x, L_y)] = -Delta/4
         M[index(i, j, 3, L_x, L_y), index(i, j+1, 0, L_x, L_y)] = Delta/4
     return M + M.conj().T
+
+#%%
+
+L_x = 20
+L_y = 20
+t = 1
+Delta = 0.5
+mu = 1
+eigenvalues, eigenvectors = np.linalg.eigh(Hamiltonian_A1u(t=t, mu=mu, L_x=L_x, L_y=L_y, Delta=Delta))
+zero_modes = eigenvectors[2*(L_x*L_y-1):2*(L_x*L_y+1)]      #4 modes with zero energy
+edge_states = []  
+creation_up = []  
+creation_down = []
+destruction_down = []
+destruction_up = []
+for i in range(4):
+    creation_up.append((zero_modes[i, ::4]).reshape((L_x, L_y)))
+    creation_down.append((zero_modes[i, 1::4]).reshape((L_x, L_y)))
+    destruction_down.append((zero_modes[i, 2::4]).reshape((L_x, L_y)))
+    destruction_up.append((zero_modes[i, 3::4]).reshape((L_x, L_y)))
+
+probability_density = np.abs(creation_up[0]+1j*destruction_up[0])**2
