@@ -93,40 +93,21 @@ def Hamiltonian_A1u_semi_infinite(k, t, mu, L_x, Delta):
     """
     M = np.zeros((4*L_x, 4*L_x), dtype=complex)
     for i in range(1, L_x+1):
-        for alpha in range(2):
-            M[index_semi_infinite(i, alpha, L_x), index_semi_infinite(i, alpha, L_x)] = -t/2*np.cos(k) - mu/4   # para no duplicar al sumar la traspuesta 
-            M[index_semi_infinite(i, alpha+2, L_x), index_semi_infinite(i, alpha+2, L_x)] = t/2*np.cos(k) + mu/4
+        M[index_semi_infinite(i, 0, L_x), index_semi_infinite(i, 0, L_x)] = -t/2*np.cos(k) - mu/4   # para no duplicar al sumar la traspuesta 
+        M[index_semi_infinite(i, 1, L_x), index_semi_infinite(i, 1, L_x)] = -t/2*np.cos(k) - mu/4
+        M[index_semi_infinite(i, 2, L_x), index_semi_infinite(i, 2, L_x)] = t/2*np.cos(k) + mu/4
+        M[index_semi_infinite(i, 3, L_x), index_semi_infinite(i, 3, L_x)] = t/2*np.cos(k) + mu/4
+        M[index_semi_infinite(i, 0, L_x), index_semi_infinite(i, 3, L_x)] = -1j*Delta/2*np.sin(k)
+        M[index_semi_infinite(i, 1, L_x), index_semi_infinite(i, 2, L_x)] = 1j*Delta/2*np.sin(k)
+        M[index_semi_infinite(i, 2, L_x), index_semi_infinite(i, 1, L_x)] = -1j*Delta/2*np.sin(k)
+        M[index_semi_infinite(i, 3, L_x), index_semi_infinite(i, 0, L_x)] = 1j*Delta/2*np.sin(k)
     for i in range(1, L_x):
-            M[index_semi_infinite(i, 0, L_x), index_semi_infinite(i+1, 0, L_x)] = -t/2
-            M[index_semi_infinite(i, 1, L_x), index_semi_infinite(i+1, 1, L_x)] = -t/2   
-            M[index_semi_infinite(i, 2, L_x), index_semi_infinite(i+1, 2, L_x)] = t/2
-            M[index_semi_infinite(i, 3, L_x), index_semi_infinite(i+1, 3, L_x)] = t/2  
-            M[index_semi_infinite(i, 0, L_x), index_semi_infinite(i+1, 3, L_x)] = -1j*Delta/2  
-            M[index_semi_infinite(i, 1, L_x), index_semi_infinite(i+1, 2, L_x)] = -1j*Delta/2  
-            M[index_semi_infinite(i, 2, L_x), index_semi_infinite(i+1, 1, L_x)] = -1j*Delta/2  
-            M[index_semi_infinite(i, 3, L_x), index_semi_infinite(i+1, 0, L_x)] = -1j*Delta/2  
+        M[index_semi_infinite(i, 0, L_x), index_semi_infinite(i+1, 0, L_x)] = -t/2
+        M[index_semi_infinite(i, 1, L_x), index_semi_infinite(i+1, 1, L_x)] = -t/2   
+        M[index_semi_infinite(i, 2, L_x), index_semi_infinite(i+1, 2, L_x)] = t/2
+        M[index_semi_infinite(i, 3, L_x), index_semi_infinite(i+1, 3, L_x)] = t/2  
+        M[index_semi_infinite(i, 0, L_x), index_semi_infinite(i+1, 3, L_x)] = -1j*Delta/2  
+        M[index_semi_infinite(i, 1, L_x), index_semi_infinite(i+1, 2, L_x)] = -1j*Delta/2  
+        M[index_semi_infinite(i, 2, L_x), index_semi_infinite(i+1, 1, L_x)] = -1j*Delta/2  
+        M[index_semi_infinite(i, 3, L_x), index_semi_infinite(i+1, 0, L_x)] = -1j*Delta/2  
     return M + M.conj().T
-
-
-
-#%% Square
-
-L_x = 20
-L_y = 20
-t = 1
-Delta = 0.5
-mu = 1
-eigenvalues, eigenvectors = np.linalg.eigh(Hamiltonian_A1u(t=t, mu=mu, L_x=L_x, L_y=L_y, Delta=Delta))
-zero_modes = eigenvectors[2*(L_x*L_y-1):2*(L_x*L_y+1)]      #4 modes with zero energy
-edge_states = []  
-creation_up = []  
-creation_down = []
-destruction_down = []
-destruction_up = []
-for i in range(4):
-    creation_up.append((zero_modes[i, ::4]).reshape((L_x, L_y)))
-    creation_down.append((zero_modes[i, 1::4]).reshape((L_x, L_y)))
-    destruction_down.append((zero_modes[i, 2::4]).reshape((L_x, L_y)))
-    destruction_up.append((zero_modes[i, 3::4]).reshape((L_x, L_y)))
-
-probability_density = np.abs(creation_up[0]+1j*destruction_up[0])**2
