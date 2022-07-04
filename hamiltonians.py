@@ -111,3 +111,15 @@ def Hamiltonian_A1u_semi_infinite(k, t, mu, L_x, Delta):
         M[index_semi_infinite(i, 2, L_x), index_semi_infinite(i+1, 1, L_x)] = -1j*Delta/2  
         M[index_semi_infinite(i, 3, L_x), index_semi_infinite(i+1, 0, L_x)] = -1j*Delta/2  
     return M + M.conj().T
+
+def Zeeman(theta, Delta_Z, L_x, L_y):
+    """ Return the Zeeman Hamiltonian matrix in 2D. 
+    """
+    M = np.zeros((4*L_x*L_y, 4*L_x*L_y), dtype=complex)
+    for i in range(1, L_x+1):
+      for j in range(1, L_y+1):
+        M[index(i, j, 0, L_x, L_y), index(i, j, 3, L_x, L_y)] = Delta_Z/2*(np.cos(theta)-1j*np.sin(theta))
+        M[index(i, j, 1, L_x, L_y), index(i, j, 2, L_x, L_y)] = Delta_Z/2*(np.cos(theta)+1j*np.sin(theta))
+        M[index(i, j, 2, L_x, L_y), index(i, j, 1, L_x, L_y)] = Delta_Z/2*(np.cos(theta)-1j*np.sin(theta))
+        M[index(i, j, 3, L_x, L_y), index(i, j, 0, L_x, L_y)] = Delta_Z/2*(np.cos(theta)+1j*np.sin(theta))
+    return M + M.conj().T
