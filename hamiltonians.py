@@ -77,7 +77,7 @@ def Hamiltonian_A1u(t, mu, L_x, L_y, Delta):
         M[index(i, j, 3, L_x, L_y), index(i, j+1, 0, L_x, L_y)] = Delta/4
     return M + M.conj().T
 
-def Hamiltonian_A1u_semi_infinit(k, t, mu, L_x, L_y, Delta):
+def Hamiltonian_A1u_semi_infinite(k, t, mu, L_x, Delta):
     r"""Returns the H_k matrix for A1u model with:
 
     .. math::
@@ -91,7 +91,7 @@ def Hamiltonian_A1u_semi_infinit(k, t, mu, L_x, L_y, Delta):
             
        \vec{c} = (c_{k,\uparrow}, c_{k,\downarrow},c^\dagger_{-k,\downarrow},-c^\dagger_{-k,\uparrow})^T
     """
-    M = np.zeros((4*L_x*L_y, 4*L_x*L_y), dtype=complex)
+    M = np.zeros((4*L_x, 4*L_x), dtype=complex)
     for i in range(1, L_x+1):
         for alpha in range(2):
             M[index_semi_infinite(i, alpha, L_x), index_semi_infinite(i, alpha, L_x)] = -t/2*np.cos(k) - mu/4   # para no duplicar al sumar la traspuesta 
@@ -107,7 +107,9 @@ def Hamiltonian_A1u_semi_infinit(k, t, mu, L_x, L_y, Delta):
             M[index_semi_infinite(i, 3, L_x), index_semi_infinite(i+1, 0, L_x)] = -1j*Delta/2  
     return M + M.conj().T
 
-#%%
+
+
+#%% Square
 
 L_x = 20
 L_y = 20
