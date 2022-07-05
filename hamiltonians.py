@@ -6,6 +6,16 @@ Created on Sat Jul  2 17:19:46 2022
 """
 import numpy as np
 
+# Pauli matrices
+sigma_0 = np.eye(2)
+sigma_x = np.array([[0, 1], [1, 0]])
+sigma_y = np.array([[0, -1j], [1j, 0]])
+sigma_z = np.array([[1, 0], [0, -1]])
+tau_0 = np.eye(2)
+tau_x = np.array([[0, 1], [1, 0]])
+tau_y = np.array([[0, -1j], [1j, 0]])
+tau_z = np.array([[1, 0], [0, -1]])
+
 def index(i, j, alpha, L_x, L_y):
   """Return the index of basis vector given the site (i,j)
   and spin index alpha for i in {1, ..., L_x} and
@@ -41,7 +51,7 @@ def Hamiltonian_A1u(t, mu, L_x, L_y, Delta):
                         c^\dagger_{n,m,\downarrow},
                         -c^\dagger_{n,m,\uparrow})^T
        
-       H = \frac{1}{2} \sum_n^{L_x} \sum_m^{L_y} (-\mu \vec{c}^\dagger_{n,m} \vec{c}_{n,m}) +
+       H = \frac{1}{2} \sum_n^{L_x} \sum_m^{L_y} (-\mu \vec{c}^\dagger_{n,m} \tau_z\sigma_0  \vec{c}_{n,m}) +
            \frac{1}{2} \sum_n^{L_x-1} \sum_m^{L_y} \left( \vec{c}^\dagger_{n,m}\left[ 
             -t\tau_z\sigma_0 -
             i\frac{\Delta}{2} \tau_x\sigma_x \right] \vec{c}_{n+1,m} + H.c. \right) +
@@ -50,31 +60,24 @@ def Hamiltonian_A1u(t, mu, L_x, L_y, Delta):
             i\frac{\Delta}{2} \tau_x\sigma_y \right] \vec{c}_{n,m+1} + H.c. \right) 
     """
     M = np.zeros((4*L_x*L_y, 4*L_x*L_y), dtype=complex)
+    onsite = -mu/4 * np.kron(tau_z, sigma_0)   # para no duplicar al sumar la traspuesta
     for i in range(1, L_x+1):
       for j in range(1, L_y+1):
-        for alpha in range(2):
-            M[index(i, j, alpha, L_x, L_y), index(i, j, alpha, L_x, L_y)] = -mu/4   # para no duplicar al sumar la traspuesta 
-            M[index(i, j, alpha+2, L_x, L_y), index(i, j, alpha+2, L_x, L_y)] = mu/4   # para no duplicar al sumar la traspuesta 
+        for alpha in range(4):
+          for beta in range(4):
+            M[index(i, j, alpha, L_x, L_y), index(i, j, beta, L_x, L_y)] = onsite[alpha, beta]   
+    hopping_x = -t/2 * np.kron(tau_z, sigma_0) - 1j*Delta/4 * np.kron(tau_x, sigma_x)
     for i in range(1, L_x):
-      for j in range(1, L_y+1):      
-        M[index(i, j, 0, L_x, L_y), index(i+1, j, 0, L_x, L_y)] = -t/2
-        M[index(i, j, 1, L_x, L_y), index(i+1, j, 1, L_x, L_y)] = -t/2
-        M[index(i, j, 2, L_x, L_y), index(i+1, j, 2, L_x, L_y)] = t/2
-        M[index(i, j, 3, L_x, L_y), index(i+1, j, 3, L_x, L_y)] = t/2
-        M[index(i, j, 0, L_x, L_y), index(i+1, j, 3, L_x, L_y)] = -1j*Delta/4
-        M[index(i, j, 1, L_x, L_y), index(i+1, j, 2, L_x, L_y)] = -1j*Delta/4
-        M[index(i, j, 2, L_x, L_y), index(i+1, j, 1, L_x, L_y)] = -1j*Delta/4
-        M[index(i, j, 3, L_x, L_y), index(i+1, j, 0, L_x, L_y)] = -1j*Delta/4
+      for j in range(1, L_y+1):    
+        for alpha in range(4):
+          for beta in range(4):
+            M[index(i, j, alpha, L_x, L_y), index(i+1, j, beta, L_x, L_y)] = hopping_x[alpha, beta]
+    hopping_y = -t/2 * np.kron(tau_z, sigma_0) - 1j*Delta/4 * np.kron(tau_x, sigma_y)
     for i in range(1, L_x+1):
-      for j in range(1, L_y):      
-        M[index(i, j, 0, L_x, L_y), index(i, j+1, 0, L_x, L_y)] = -t/2
-        M[index(i, j, 1, L_x, L_y), index(i, j+1, 1, L_x, L_y)] = -t/2
-        M[index(i, j, 2, L_x, L_y), index(i, j+1, 2, L_x, L_y)] = t/2
-        M[index(i, j, 3, L_x, L_y), index(i, j+1, 3, L_x, L_y)] = t/2
-        M[index(i, j, 0, L_x, L_y), index(i, j+1, 3, L_x, L_y)] = -Delta/4
-        M[index(i, j, 1, L_x, L_y), index(i, j+1, 2, L_x, L_y)] = Delta/4
-        M[index(i, j, 2, L_x, L_y), index(i, j+1, 1, L_x, L_y)] = -Delta/4
-        M[index(i, j, 3, L_x, L_y), index(i, j+1, 0, L_x, L_y)] = Delta/4
+      for j in range(1, L_y): 
+        for alpha in range(4):
+          for beta in range(4):
+            M[index(i, j, alpha, L_x, L_y), index(i, j+1, beta, L_x, L_y)] = hopping_y[alpha, beta]
     return M + M.conj().T
 
 def Hamiltonian_A1u_semi_infinite(k, t, mu, L_x, Delta):
@@ -85,41 +88,45 @@ def Hamiltonian_A1u_semi_infinite(k, t, mu, L_x, Delta):
         
         H_k = \sum_n^L \vec{c}^\dagger_n\left[ 
             \xi_k\tau_z\sigma_0 +
-            \Delta sin(k_y)\tau_x\sigma_y \right] +
+            \Delta sin(k_y)\tau_x\sigma_y \right] \vec{c}_n +
             \sum_n^{L-1}\vec{c}^\dagger_n(-t\tau_z\sigma_0 + \frac{\Delta}{2i}\tau_x\sigma_x)\vec{c}_{n+1}
             + H.c.
-            
+        
+        \xi_k = -2t\cos(k)-\mu    
+        
        \vec{c} = (c_{k,\uparrow}, c_{k,\downarrow},c^\dagger_{-k,\downarrow},-c^\dagger_{-k,\uparrow})^T
     """
     M = np.zeros((4*L_x, 4*L_x), dtype=complex)
+    onsite = (-mu/4 - t/2*np.cos(k)) * np.kron(tau_z, sigma_0)   # para no duplicar al sumar la traspuesta
     for i in range(1, L_x+1):
-        M[index_semi_infinite(i, 0, L_x), index_semi_infinite(i, 0, L_x)] = -t/2*np.cos(k) - mu/4   # para no duplicar al sumar la traspuesta 
-        M[index_semi_infinite(i, 1, L_x), index_semi_infinite(i, 1, L_x)] = -t/2*np.cos(k) - mu/4
-        M[index_semi_infinite(i, 2, L_x), index_semi_infinite(i, 2, L_x)] = t/2*np.cos(k) + mu/4
-        M[index_semi_infinite(i, 3, L_x), index_semi_infinite(i, 3, L_x)] = t/2*np.cos(k) + mu/4
-        M[index_semi_infinite(i, 0, L_x), index_semi_infinite(i, 3, L_x)] = -1j*Delta/2*np.sin(k)
-        M[index_semi_infinite(i, 1, L_x), index_semi_infinite(i, 2, L_x)] = 1j*Delta/2*np.sin(k)
-        M[index_semi_infinite(i, 2, L_x), index_semi_infinite(i, 1, L_x)] = -1j*Delta/2*np.sin(k)
-        M[index_semi_infinite(i, 3, L_x), index_semi_infinite(i, 0, L_x)] = 1j*Delta/2*np.sin(k)
+        for alpha in range(4):
+            for beta in range(4):
+                M[index_semi_infinite(i, alpha, L_x), index_semi_infinite(i, beta, L_x)] = onsite[alpha, beta] 
+    hopping = -t/2 * np.kron(tau_z, sigma_0) - 1j*Delta/4 * np.kron(tau_x, sigma_x)
     for i in range(1, L_x):
-        M[index_semi_infinite(i, 0, L_x), index_semi_infinite(i+1, 0, L_x)] = -t/2
-        M[index_semi_infinite(i, 1, L_x), index_semi_infinite(i+1, 1, L_x)] = -t/2   
-        M[index_semi_infinite(i, 2, L_x), index_semi_infinite(i+1, 2, L_x)] = t/2
-        M[index_semi_infinite(i, 3, L_x), index_semi_infinite(i+1, 3, L_x)] = t/2  
-        M[index_semi_infinite(i, 0, L_x), index_semi_infinite(i+1, 3, L_x)] = -1j*Delta/2  
-        M[index_semi_infinite(i, 1, L_x), index_semi_infinite(i+1, 2, L_x)] = -1j*Delta/2  
-        M[index_semi_infinite(i, 2, L_x), index_semi_infinite(i+1, 1, L_x)] = -1j*Delta/2  
-        M[index_semi_infinite(i, 3, L_x), index_semi_infinite(i+1, 0, L_x)] = -1j*Delta/2  
+        for alpha in range(4):
+            for beta in range(4):
+                M[index_semi_infinite(i, alpha, L_x), index_semi_infinite(i+1, beta, L_x)] = hopping[alpha, beta]
     return M + M.conj().T
 
 def Zeeman(theta, Delta_Z, L_x, L_y):
-    """ Return the Zeeman Hamiltonian matrix in 2D. 
+    r""" Return the Zeeman Hamiltonian matrix in 2D.
+    
+    .. math::
+        H_Z = \frac{\Delta_Z}{2} \sum_n^{L_x} \sum_m^{L_y} \vec{c}^\dagger_{n,m}
+        \tau_0(\cos(\theta)\sigma_x + \sin(\theta)\sigma_y)\vec{c}_{n,m}
+    
+        \vec{c}_{n,m} = (c_{n,m,\uparrow},
+                         c_{n,m,\downarrow},
+                         c^\dagger_{n,m,\downarrow},
+                         -c^\dagger_{n,m,\uparrow})^T
     """
     M = np.zeros((4*L_x*L_y, 4*L_x*L_y), dtype=complex)
+    onsite = Delta_Z/2*( np.cos(theta)*np.kron(tau_0, sigma_x) +
+                        np.sin(theta)*np.kron(tau_0, sigma_y) )
     for i in range(1, L_x+1):
       for j in range(1, L_y+1):
-        M[index(i, j, 0, L_x, L_y), index(i, j, 3, L_x, L_y)] = Delta_Z/2*(np.cos(theta)-1j*np.sin(theta))
-        M[index(i, j, 1, L_x, L_y), index(i, j, 2, L_x, L_y)] = Delta_Z/2*(np.cos(theta)+1j*np.sin(theta))
-        M[index(i, j, 2, L_x, L_y), index(i, j, 1, L_x, L_y)] = Delta_Z/2*(np.cos(theta)-1j*np.sin(theta))
-        M[index(i, j, 3, L_x, L_y), index(i, j, 0, L_x, L_y)] = Delta_Z/2*(np.cos(theta)+1j*np.sin(theta))
-    return M + M.conj().T
+          for alpha in range(4):
+              for beta in range(4):
+                  M[index(i, j, alpha, L_x, L_y), index(i, j, beta, L_x, L_y)] = onsite[alpha, beta]
+    return M
