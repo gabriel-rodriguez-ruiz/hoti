@@ -97,7 +97,7 @@ def Hamiltonian_A1u_semi_infinite(k, t, mu, L_x, Delta):
        \vec{c} = (c_{k,\uparrow}, c_{k,\downarrow},c^\dagger_{-k,\downarrow},-c^\dagger_{-k,\uparrow})^T
     """
     M = np.zeros((4*L_x, 4*L_x), dtype=complex)
-    onsite = (-mu/4 - t/2*np.cos(k)) * np.kron(tau_z, sigma_0)   # para no duplicar al sumar la traspuesta
+    onsite = (-mu/4 - t/2*np.cos(k)) * np.kron(tau_z, sigma_0) + Delta/2*np.sin(k)*np.kron(tau_x, sigma_y)   # para no duplicar al sumar la traspuesta
     for i in range(1, L_x+1):
         for alpha in range(4):
             for beta in range(4):
@@ -130,3 +130,8 @@ def Zeeman(theta, Delta_Z, L_x, L_y):
               for beta in range(4):
                   M[index(i, j, alpha, L_x, L_y), index(i, j, beta, L_x, L_y)] = onsite[alpha, beta]
     return M
+
+def Hamiltonian_A1u_semi_infinite_with_Zeeman(k, t, mu, L_x, Delta, Delta_Z, theta):
+    H_0 = Hamiltonian_A1u_semi_infinite(k, t, mu, L_x, Delta)
+    H_Z = Zeeman(theta, Delta_Z, L_x, L_y=1)
+    return H_0 + H_Z

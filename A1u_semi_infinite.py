@@ -7,19 +7,23 @@ Created on Mon Jul  4 11:24:41 2022
 """
 import numpy as np
 import matplotlib.pyplot as plt
-from hamiltonians import Hamiltonian_A1u_semi_infinite
+from hamiltonians import Hamiltonian_A1u_semi_infinite, Hamiltonian_A1u_semi_infinite_with_Zeeman
 from functions import spectrum
 
 L_x = 50
 t = 1
 Delta = 1
 mu = -2    # topological phase if 0<mu<4t
+Delta_Z = 0   #0.2
+theta = 0
 k = np.linspace(0, np.pi)
 
-params = dict(t=t, mu=mu, Delta=Delta, L_x=L_x)
+params = dict(t=t, mu=mu, Delta=Delta, L_x=L_x,
+              Delta_Z=Delta_Z, theta=theta)
 
-spectrum_A1u = spectrum(Hamiltonian_A1u_semi_infinite, k, **params)
-fig, ax = plt.subplots()
+spectrum_A1u = spectrum(Hamiltonian_A1u_semi_infinite_with_Zeeman, k, **params)
+fig, ax = plt.subplots(num="Espectro")
 ax.plot(k, spectrum_A1u, linewidth=0.1, color="m")
-ax.set_xlabel("k")
-ax.set_xlabel("E")
+ax.set_xlabel(r"$k_y$")
+ax.set_ylabel("E")
+ax.set_title(f"{params}")
