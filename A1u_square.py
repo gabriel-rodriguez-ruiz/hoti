@@ -14,8 +14,8 @@ L_y = 20
 t = 1
 Delta = 1
 mu = -2
-Delta_Z = 0.2
-theta = 2*np.pi/3
+Delta_Z = 0.5#0.2
+theta = 0
 
 params = dict(t=t, mu=mu, Delta=Delta,
               Delta_Z=Delta_Z, theta=theta)
@@ -39,7 +39,7 @@ for i in range(4):      #each list has 4 elements corresponding to the 4 degener
     probability_density[:,:,i] = np.abs(creation_up[i])**2 + np.abs(creation_down[i])**2 + np.abs(destruction_down[i])**2 + np.abs(destruction_up[i])**2
 
 plt.figure("Zeeman", clear=True)
-plt.imshow(probability_density[:,:,2])
+plt.imshow(probability_density[:,:,2], cmap="Blues")
 plt.colorbar()
 plt.title(f"{params}")
 
