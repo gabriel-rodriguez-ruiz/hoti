@@ -14,15 +14,15 @@ L_y = 20
 t = 1
 Delta = 1
 mu = -2
-Delta_Z = 0#0.2
-theta = 0
+Delta_Z = 0.2#0.2
+theta = np.pi/2
 
 params = dict(t=t, mu=mu, Delta=Delta,
               Delta_Z=Delta_Z, theta=theta)
 
 eigenvalues, eigenvectors = np.linalg.eigh(Hamiltonian_A1u(t=t, mu=mu, L_x=L_x, L_y=L_y, Delta=Delta) +
                                            Zeeman(theta=theta, Delta_Z=Delta_Z, L_x=L_x, L_y=L_y))
-zero_modes = eigenvectors[:, 2*(L_x*L_y-1):2*(L_x*L_y+1)]      #4 modes with zero energy
+zero_modes = eigenvectors[:, 2*(L_x*L_y-1):2*(L_x*L_y+1)]      #4 (2) modes with zero energy (with Zeeman)
 
 creation_up = []  
 creation_down = []
@@ -35,7 +35,7 @@ for i in range(4):      #each list has 4 elements corresponding to the 4 degener
     creation_up.append((zero_modes[3::4, i]).reshape((L_x, L_y)))
 
 probability_density = np.zeros((L_x,L_y, 4))
-for i in range(4):      #each list has 4 elements corresponding to the 4 degenerated energies
+for i in range(4):      #each list has 4 elements corresponding to the 4 degenerated energies, if Zeeman is on only index 1 and 2 are degenerate
     probability_density[:,:,i] = np.abs(creation_up[i])**2 + np.abs(creation_down[i])**2 + np.abs(destruction_down[i])**2 + np.abs(destruction_up[i])**2
 
 fig, ax = plt.subplots(num="Zeeman", clear=True)

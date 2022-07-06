@@ -7,7 +7,7 @@ Created on Mon Jul  4 11:24:41 2022
 """
 import numpy as np
 import matplotlib.pyplot as plt
-from hamiltonians import Hamiltonian_A1u_semi_infinite, Hamiltonian_A1u_semi_infinite_with_Zeeman
+from hamiltonians import Hamiltonian_A1u_semi_infinite_with_Zeeman
 from functions import spectrum
 
 L_x = 100
@@ -15,7 +15,7 @@ t = 1
 Delta = 1
 mu = -2    # topological phase if 0<mu<4
 Delta_Z = 0.2   #0.2
-theta = np.pi/4
+theta = np.pi/2
 k = np.linspace(0, np.pi, 200)
 
 params = dict(t=t, mu=mu, Delta=Delta, L_x=L_x,
