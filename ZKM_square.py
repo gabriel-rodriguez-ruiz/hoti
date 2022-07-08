@@ -9,8 +9,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 from hamiltonians import Hamiltonian_ZKM, Zeeman
 
-L_x = 30
-L_y = 20
+L_x = 5
+L_y = 40
 t = 1
 mu = -2*t
 Delta_Z = 0#0.2

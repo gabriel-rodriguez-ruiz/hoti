@@ -154,22 +154,58 @@ def Hamiltonian_ZKM(t, mu, L_x, L_y, Delta_0, Delta_1, Lambda):
             \Delta_1\tau_x\sigma_0 + i\lambda\tau_z\sigma_x\right] \vec{c}_{n,m+1} + H.c. \right) 
     """
     M = np.zeros((4*L_x*L_y, 4*L_x*L_y), dtype=complex)
-    onsite = -mu/4 * np.kron(tau_z, sigma_0) + Delta_0/4 * np.kron(tau_x, sigma_0)
+    onsite = -mu/2 * np.kron(tau_z, sigma_0) + Delta_0/2 * np.kron(tau_x, sigma_0)
     for i in range(1, L_x+1):
       for j in range(1, L_y+1):
         for alpha in range(4):
           for beta in range(4):
             M[index(i, j, alpha, L_x, L_y), index(i, j, beta, L_x, L_y)] = onsite[alpha, beta]   
-    hopping_x = -t/2 * np.kron(tau_z, sigma_0) + Delta_1/2 * np.kron(tau_x, sigma_0) - 1j*Lambda/2*(np.kron(tau_z, sigma_y))
+    hopping_x = -t * np.kron(tau_z, sigma_0) - 1j*Lambda * np.kron(tau_z, sigma_z) + Delta_1*np.kron(tau_x, sigma_0)
     for i in range(1, L_x):
       for j in range(1, L_y+1):    
         for alpha in range(4):
           for beta in range(4):
             M[index(i, j, alpha, L_x, L_y), index(i+1, j, beta, L_x, L_y)] = hopping_x[alpha, beta]
-    hopping_y = -t/2 * np.kron(tau_z, sigma_0) + Delta_1/2 * np.kron(tau_x, sigma_0) + 1j*Lambda/2*np.kron(tau_z, sigma_x)
-    for i in range(1, L_x+1):
-      for j in range(1, L_y): 
+    hopping_y = -t * np.kron(tau_z, sigma_0) + 1j*Lambda*np.kron(tau_z, sigma_x) + Delta_1*np.kron(tau_x, sigma_0)
+    for i in range(1, L_x):
+        for i in range(1, L_x+1):
+            for j in range(1, L_y): 
+                for alpha in range(4):
+                    for beta in range(4):
+                        M[index(i, j, alpha, L_x, L_y), index(i, j+1, beta, L_x, L_y)] = hopping_y[alpha, beta]
+    return M + M.conj().T
+
+def Hamiltonian_ZKM_semi_infinite(k, t, mu, L_x, Delta_0, Delta_1, Lambda):
+    r"""Returns the H matrix for ZKM model with:
+
+    .. math::
+        H_{ZKM} = \frac{1}{2}\sum_k H_k
+        
+        H_k = \sum_{n=1}^{L_x} 
+            \vec{c}^\dagger_n\left[ 
+            \xi_k\tau_z\sigma_0+\Delta_k\tau_x\sigma_0
+            -2\lambda\sin(k)\tau_z\sigma_x \right]\vec{c}_n+
+            \sum_{n=1}^{L_x-1}             
+            \left[
+            \vec{c}^\dagger_n(-t\tau_z\sigma_0-i\lambda\tau_z\sigma_z + \Delta_1\tau_x\sigma_0 )\vec{c}_{n+1}
+            + H.c.
+            \right]
+            
+       \vec{c} = (c_{k,\uparrow}, c_{k,\downarrow},c^\dagger_{-k,\downarrow},-c^\dagger_{-k,\uparrow})^T
+       
+       \xi_k = -\mu - 2t\cos(k)
+       
+       \Delta_k = \Delta_0+2\Delta_1\cos(k)
+        """
+    M = np.zeros((4*L_x, 4*L_x), dtype=complex)
+    onsite = (-mu/2 - t*np.cos(k)) * np.kron(tau_z, sigma_0) + (Delta_0+2*Delta_1*np.cos(k))/2*np.kron(tau_x, sigma_0) - Lambda*np.sin(k)*np.kron(tau_z, sigma_x)
+    for i in range(1, L_x+1): 
         for alpha in range(4):
-          for beta in range(4):
-            M[index(i, j, alpha, L_x, L_y), index(i, j+1, beta, L_x, L_y)] = hopping_y[alpha, beta]
+            for beta in range(4):
+                M[index_semi_infinite(i, alpha, L_x), index_semi_infinite(i, beta, L_x)] = onsite[alpha, beta] 
+    hopping = -t * np.kron(tau_z, sigma_0) - 1j*Lambda * np.kron(tau_z, sigma_z) + Delta_1*np.kron(tau_x, sigma_0)
+    for i in range(1, L_x):
+        for alpha in range(4):
+            for beta in range(4):
+                M[index_semi_infinite(i, alpha, L_x), index_semi_infinite(i+1, beta, L_x)] = hopping[alpha, beta]
     return M + M.conj().T

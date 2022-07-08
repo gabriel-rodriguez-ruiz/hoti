@@ -15,7 +15,7 @@ t = 1
 Delta = 1
 mu = -2
 Delta_Z = 0.2#0.2
-theta = np.pi/2
+theta = np.pi/4
 
 params = dict(t=t, mu=mu, Delta=Delta,
               Delta_Z=Delta_Z, theta=theta)
