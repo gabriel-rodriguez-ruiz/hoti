@@ -135,3 +135,41 @@ def Hamiltonian_A1u_semi_infinite_with_Zeeman(k, t, mu, L_x, Delta, Delta_Z, the
     H_0 = Hamiltonian_A1u_semi_infinite(k, t, mu, L_x, Delta)
     H_Z = Zeeman(theta, Delta_Z, L_x, L_y=1)
     return H_0 + H_Z
+
+def Hamiltonian_ZKM(t, mu, L_x, L_y, Delta_0, Delta_1, Lambda):
+    r"""Return the matrix for ZKM model with:
+
+    .. math ::
+       \vec{c_{n,m}} = (c_{n,m,\uparrow},
+                        c_{n,m,\downarrow},
+                        c^\dagger_{n,m,\downarrow},
+                        -c^\dagger_{n,m,\uparrow})^T
+       
+       H = \frac{1}{2} \sum_n^{L_x} \sum_m^{L_y}  \vec{c}^\dagger_{n,m} (-\mu \tau_z\sigma_0 + \Delta_0 \tau_x\sigma_0) \vec{c}_{n,m} +
+           \frac{1}{2} \sum_n^{L_x-1} \sum_m^{L_y} \left( \vec{c}^\dagger_{n,m}\left[ 
+            -t\tau_z\sigma_0 +
+             \Delta_1\tau_x\sigma_0 - i\lambda\tau_z\sigma_y \right] \vec{c}_{n+1,m} + H.c. \right) +
+           \frac{1}{2} \sum_n^{L_x} \sum_m^{L_y-1} \left( \vec{c}^\dagger_{n,m}\left[ 
+            -t\tau_z\sigma_0 +
+            \Delta_1\tau_x\sigma_0 + i\lambda\tau_z\sigma_x\right] \vec{c}_{n,m+1} + H.c. \right) 
+    """
+    M = np.zeros((4*L_x*L_y, 4*L_x*L_y), dtype=complex)
+    onsite = -mu/4 * np.kron(tau_z, sigma_0) + Delta_0/4 * np.kron(tau_x, sigma_0)
+    for i in range(1, L_x+1):
+      for j in range(1, L_y+1):
+        for alpha in range(4):
+          for beta in range(4):
+            M[index(i, j, alpha, L_x, L_y), index(i, j, beta, L_x, L_y)] = onsite[alpha, beta]   
+    hopping_x = -t/2 * np.kron(tau_z, sigma_0) + Delta_1/2 * np.kron(tau_x, sigma_0) - 1j*Lambda/2*(np.kron(tau_z, sigma_y))
+    for i in range(1, L_x):
+      for j in range(1, L_y+1):    
+        for alpha in range(4):
+          for beta in range(4):
+            M[index(i, j, alpha, L_x, L_y), index(i+1, j, beta, L_x, L_y)] = hopping_x[alpha, beta]
+    hopping_y = -t/2 * np.kron(tau_z, sigma_0) + Delta_1/2 * np.kron(tau_x, sigma_0) + 1j*Lambda/2*np.kron(tau_z, sigma_x)
+    for i in range(1, L_x+1):
+      for j in range(1, L_y): 
+        for alpha in range(4):
+          for beta in range(4):
+            M[index(i, j, alpha, L_x, L_y), index(i, j+1, beta, L_x, L_y)] = hopping_y[alpha, beta]
+    return M + M.conj().T
