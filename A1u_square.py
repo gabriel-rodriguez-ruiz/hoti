@@ -14,14 +14,15 @@ L_y = 20
 t = 1
 Delta = 1
 mu = -2
-Delta_Z = 0#0.2
-theta = np.pi/4
+Delta_Z = 0.2   #0.2
+theta = 0
+phi = np.pi/2
 
 params = dict(t=t, mu=mu, Delta=Delta,
-              Delta_Z=Delta_Z, theta=theta)
+              Delta_Z=Delta_Z, theta=theta, phi=phi)
 
 eigenvalues, eigenvectors = np.linalg.eigh(Hamiltonian_A1u(t=t, mu=mu, L_x=L_x, L_y=L_y, Delta=Delta) +
-                                           Zeeman(theta=theta, Delta_Z=Delta_Z, L_x=L_x, L_y=L_y))
+                                           Zeeman(theta=theta, Delta_Z=Delta_Z, L_x=L_x, L_y=L_y, phi=phi))
 zero_modes = eigenvectors[:, 2*(L_x*L_y-1):2*(L_x*L_y+1)]      #4 (2) modes with zero energy (with Zeeman)
 
 creation_up = []  

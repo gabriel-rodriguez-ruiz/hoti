@@ -10,12 +10,12 @@ import matplotlib.pyplot as plt
 from hamiltonians import Hamiltonian_A1u_semi_infinite_with_Zeeman
 from functions import spectrum
 
-L_x = 100
+L_x = 50
 t = 1
 Delta = 1
 mu = -2    # topological phase if 0<mu<4
 Delta_Z = 0.2   #0.2
-theta = np.pi/2
+theta = 0
 phi = 0
 k = np.linspace(0, np.pi, 200)
 
