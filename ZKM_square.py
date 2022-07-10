@@ -9,14 +9,14 @@ import numpy as np
 import matplotlib.pyplot as plt
 from hamiltonians import Hamiltonian_ZKM, Zeeman
 
-L_x = 5
-L_y = 40
+L_x = 30
+L_y = 30
 t = 1
-mu = -2*t
-Delta_Z = 0#0.2
-theta = 0
-Delta_0 = -0.4*t
-Delta_1 = 0.2*t
+mu = -2*t   # mu=t*Delta_0/Delta_1
+Delta_Z = 0.2  # 0.2
+theta = np.pi/4
+Delta_0 = -0.4*t*4
+Delta_1 = 0.2*t*4
 Lambda = 0.5*t
 
 params = dict(t=t, mu=mu, Delta_0=Delta_0,
@@ -41,6 +41,7 @@ probability_density = np.zeros((L_x,L_y, 4))
 for i in range(4):      #each list has 4 elements corresponding to the 4 degenerated energies, if Zeeman is on only index 1 and 2 are degenerate
     probability_density[:,:,i] = np.abs(creation_up[i])**2 + np.abs(creation_down[i])**2 + np.abs(destruction_down[i])**2 + np.abs(destruction_up[i])**2
 
+#%%
 fig, ax = plt.subplots(num="Zeeman", clear=True)
 image = ax.imshow(probability_density[:,:,2].T, cmap="Blues", origin="lower") #I have made the transpose and changed the origin to have xy axes as usually
 plt.colorbar(image)

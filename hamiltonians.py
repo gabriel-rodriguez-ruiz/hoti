@@ -109,12 +109,12 @@ def Hamiltonian_A1u_semi_infinite(k, t, mu, L_x, Delta):
                 M[index_semi_infinite(i, alpha, L_x), index_semi_infinite(i+1, beta, L_x)] = hopping[alpha, beta]
     return M + M.conj().T
 
-def Zeeman(theta, Delta_Z, L_x, L_y):
+def Zeeman(theta, phi, Delta_Z, L_x, L_y):
     r""" Return the Zeeman Hamiltonian matrix in 2D.
     
     .. math::
         H_Z = \frac{\Delta_Z}{2} \sum_n^{L_x} \sum_m^{L_y} \vec{c}^\dagger_{n,m}
-        \tau_0(\cos(\theta)\sigma_x + \sin(\theta)\sigma_y)\vec{c}_{n,m}
+        \tau_0(\cos(\varphi)\sin(\theta)\sigma_x + \sin(\varphi)\sin(\theta)\sigma_y + \cos(\theta)\sigma_z)\vec{c}_{n,m}
     
         \vec{c}_{n,m} = (c_{n,m,\uparrow},
                          c_{n,m,\downarrow},
@@ -122,8 +122,9 @@ def Zeeman(theta, Delta_Z, L_x, L_y):
                          -c^\dagger_{n,m,\uparrow})^T
     """
     M = np.zeros((4*L_x*L_y, 4*L_x*L_y), dtype=complex)
-    onsite = Delta_Z/2*( np.cos(theta)*np.kron(tau_0, sigma_x) +
-                        np.sin(theta)*np.kron(tau_0, sigma_y) )
+    onsite = Delta_Z/2*( np.cos(phi)*np.sin(theta)*np.kron(tau_0, sigma_x) +
+                        np.sin(phi)*np.sin(theta)*np.kron(tau_0, sigma_y) +
+                        np.cos(theta)*np.kron(tau_0, sigma_z))
     for i in range(1, L_x+1):
       for j in range(1, L_y+1):
           for alpha in range(4):
@@ -131,9 +132,9 @@ def Zeeman(theta, Delta_Z, L_x, L_y):
                   M[index(i, j, alpha, L_x, L_y), index(i, j, beta, L_x, L_y)] = onsite[alpha, beta]
     return M
 
-def Hamiltonian_A1u_semi_infinite_with_Zeeman(k, t, mu, L_x, Delta, Delta_Z, theta):
+def Hamiltonian_A1u_semi_infinite_with_Zeeman(k, t, mu, L_x, Delta, Delta_Z, theta, phi):
     H_0 = Hamiltonian_A1u_semi_infinite(k, t, mu, L_x, Delta)
-    H_Z = Zeeman(theta, Delta_Z, L_x, L_y=1)
+    H_Z = Zeeman(theta, phi, Delta_Z, L_x, L_y=1)
     return H_0 + H_Z
 
 def Hamiltonian_ZKM(t, mu, L_x, L_y, Delta_0, Delta_1, Lambda):
@@ -160,7 +161,7 @@ def Hamiltonian_ZKM(t, mu, L_x, L_y, Delta_0, Delta_1, Lambda):
         for alpha in range(4):
           for beta in range(4):
             M[index(i, j, alpha, L_x, L_y), index(i, j, beta, L_x, L_y)] = onsite[alpha, beta]   
-    hopping_x = -t * np.kron(tau_z, sigma_0) - 1j*Lambda * np.kron(tau_z, sigma_z) + Delta_1*np.kron(tau_x, sigma_0)
+    hopping_x = -t * np.kron(tau_z, sigma_0) - 1j*Lambda * np.kron(tau_z, sigma_y) + Delta_1*np.kron(tau_x, sigma_0)
     for i in range(1, L_x):
       for j in range(1, L_y+1):    
         for alpha in range(4):
@@ -187,7 +188,7 @@ def Hamiltonian_ZKM_semi_infinite(k, t, mu, L_x, Delta_0, Delta_1, Lambda):
             -2\lambda\sin(k)\tau_z\sigma_x \right]\vec{c}_n+
             \sum_{n=1}^{L_x-1}             
             \left[
-            \vec{c}^\dagger_n(-t\tau_z\sigma_0-i\lambda\tau_z\sigma_z + \Delta_1\tau_x\sigma_0 )\vec{c}_{n+1}
+            \vec{c}^\dagger_n(-t\tau_z\sigma_0-i\lambda\tau_z\sigma_y + \Delta_1\tau_x\sigma_0 )\vec{c}_{n+1}
             + H.c.
             \right]
             
@@ -203,9 +204,14 @@ def Hamiltonian_ZKM_semi_infinite(k, t, mu, L_x, Delta_0, Delta_1, Lambda):
         for alpha in range(4):
             for beta in range(4):
                 M[index_semi_infinite(i, alpha, L_x), index_semi_infinite(i, beta, L_x)] = onsite[alpha, beta] 
-    hopping = -t * np.kron(tau_z, sigma_0) - 1j*Lambda * np.kron(tau_z, sigma_z) + Delta_1*np.kron(tau_x, sigma_0)
+    hopping = -t * np.kron(tau_z, sigma_0) - 1j*Lambda * np.kron(tau_z, sigma_y) + Delta_1*np.kron(tau_x, sigma_0)
     for i in range(1, L_x):
         for alpha in range(4):
             for beta in range(4):
                 M[index_semi_infinite(i, alpha, L_x), index_semi_infinite(i+1, beta, L_x)] = hopping[alpha, beta]
     return M + M.conj().T
+
+def Hamiltonian_ZKM_semi_infinite_with_Zeeman(k, t, mu, L_x, Delta_0, Delta_1, Lambda, Delta_Z, theta, phi):
+    H_0 = Hamiltonian_ZKM_semi_infinite(k, t, mu, L_x, Delta_0, Delta_1, Lambda)
+    H_Z = Zeeman(theta, phi, Delta_Z, L_x, L_y=1)
+    return H_0 + H_Z

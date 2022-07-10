@@ -14,7 +14,7 @@ L_y = 20
 t = 1
 Delta = 1
 mu = -2
-Delta_Z = 0.2#0.2
+Delta_Z = 0#0.2
 theta = np.pi/4
 
 params = dict(t=t, mu=mu, Delta=Delta,
