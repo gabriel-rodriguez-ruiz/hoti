@@ -15,8 +15,8 @@ t = 1
 Delta = 1
 mu = -2    # topological phase if 0<mu<4
 Delta_Z = 0.2   #0.2
-theta = 0
-phi = 0
+theta = np.pi/4
+phi = np.pi/4
 k = np.linspace(0, np.pi, 200)
 
 params = dict(t=t, mu=mu, Delta=Delta, L_x=L_x,
