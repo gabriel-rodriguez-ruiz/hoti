@@ -17,12 +17,13 @@ Delta_0 = -0.4*t*4
 Delta_1 = 0.2*t*4
 mu = -2*t    # topological phase if -3<mu<-1
 Delta_Z = 0.2  #0.2
-theta = np.pi/4
+theta = 0
+phi = 0
 k = np.linspace(0, np.pi, 200)
 Lambda = 0.5*t
 
 params = dict(t=t, mu=mu, Delta_0=Delta_0, Delta_1=Delta_1, L_x=L_x,
-             Lambda=Lambda, Delta_Z=Delta_Z, theta=theta)
+             Lambda=Lambda, Delta_Z=Delta_Z, theta=theta, phi=phi)
 
 spectrum_A1u = spectrum(Hamiltonian_ZKM_semi_infinite_with_Zeeman, k, **params)
 fig, ax = plt.subplots(num="Espectro", clear=True)

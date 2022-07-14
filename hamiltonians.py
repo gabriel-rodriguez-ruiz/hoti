@@ -215,3 +215,75 @@ def Hamiltonian_ZKM_semi_infinite_with_Zeeman(k, t, mu, L_x, Delta_0, Delta_1, L
     H_0 = Hamiltonian_ZKM_semi_infinite(k, t, mu, L_x, Delta_0, Delta_1, Lambda)
     H_Z = Zeeman(theta, phi, Delta_Z, L_x, L_y=1)
     return H_0 + H_Z
+
+def Hamiltonian_Eu_semi_infinite(k, t, mu, L_x, Delta):
+    r"""Returns the H_k matrix for Eu model with:
+
+    .. math::
+        H_{Eu} = \frac{1}{2}\sum_k H_k
+        
+        H_k = \sum_n^L \vec{c}^\dagger_n\left[ 
+            \xi_k\tau_z\sigma_0 +
+            \Delta sin(k_y)\tau_x\sigma_z \right] \vec{c}_n +
+            \sum_n^{L-1}\vec{c}^\dagger_n(-t\tau_z\sigma_0 + \frac{\Delta}{2i}\tau_x\sigma_z)\vec{c}_{n+1}
+            + H.c.
+        
+        \xi_k = -2t\cos(k)-\mu    
+        
+       \vec{c} = (c_{k,\uparrow}, c_{k,\downarrow},c^\dagger_{-k,\downarrow},-c^\dagger_{-k,\uparrow})^T
+    """
+    M = np.zeros((4*L_x, 4*L_x), dtype=complex)
+    onsite = (-mu/4 - t/2*np.cos(k)) * np.kron(tau_z, sigma_0) + Delta/2*np.sin(k)*np.kron(tau_x, sigma_z)   # para no duplicar al sumar la traspuesta
+    for i in range(1, L_x+1):
+        for alpha in range(4):
+            for beta in range(4):
+                M[index_semi_infinite(i, alpha, L_x), index_semi_infinite(i, beta, L_x)] = onsite[alpha, beta] 
+    hopping = -t/2 * np.kron(tau_z, sigma_0) - 1j*Delta/4 * np.kron(tau_x, sigma_z)
+    for i in range(1, L_x):
+        for alpha in range(4):
+            for beta in range(4):
+                M[index_semi_infinite(i, alpha, L_x), index_semi_infinite(i+1, beta, L_x)] = hopping[alpha, beta]
+    return M + M.conj().T
+
+def Hamiltonian_Eu_semi_infinite_with_Zeeman(k, t, mu, L_x, Delta, Delta_Z, theta, phi):
+    H_0 = Hamiltonian_Eu_semi_infinite(k, t, mu, L_x, Delta)
+    H_Z = Zeeman(theta, phi, Delta_Z, L_x, L_y=1)
+    return H_0 + H_Z
+
+def Hamiltonian_Eu(t, mu, L_x, L_y, Delta):
+    r"""Return the matrix for Eu model with:
+
+    .. math ::
+       \vec{c_{n,m}} = (c_{n,m,\uparrow},
+                        c_{n,m,\downarrow},
+                        c^\dagger_{n,m,\downarrow},
+                        -c^\dagger_{n,m,\uparrow})^T
+       
+       H = \frac{1}{2} \sum_n^{L_x} \sum_m^{L_y} (-\mu \vec{c}^\dagger_{n,m} \tau_z\sigma_0  \vec{c}_{n,m}) +
+           \frac{1}{2} \sum_n^{L_x-1} \sum_m^{L_y} \left( \vec{c}^\dagger_{n,m}\left[ 
+            -t\tau_z\sigma_0 -
+            i\frac{\Delta}{2} \tau_x\sigma_z \right] \vec{c}_{n+1,m} + H.c. \right) +
+           \frac{1}{2} \sum_n^{L_x} \sum_m^{L_y-1} \left( \vec{c}^\dagger_{n,m}\left[ 
+            -t\tau_z\sigma_0 -
+            i\frac{\Delta}{2} \tau_x\sigma_z \right] \vec{c}_{n,m+1} + H.c. \right) 
+    """
+    M = np.zeros((4*L_x*L_y, 4*L_x*L_y), dtype=complex)
+    onsite = -mu/4 * np.kron(tau_z, sigma_0)   # para no duplicar al sumar la traspuesta
+    for i in range(1, L_x+1):
+      for j in range(1, L_y+1):
+        for alpha in range(4):
+          for beta in range(4):
+            M[index(i, j, alpha, L_x, L_y), index(i, j, beta, L_x, L_y)] = onsite[alpha, beta]   
+    hopping_x = -t/2 * np.kron(tau_z, sigma_0) - 1j*Delta/4 * np.kron(tau_x, sigma_z)
+    for i in range(1, L_x):
+      for j in range(1, L_y+1):    
+        for alpha in range(4):
+          for beta in range(4):
+            M[index(i, j, alpha, L_x, L_y), index(i+1, j, beta, L_x, L_y)] = hopping_x[alpha, beta]
+    hopping_y = -t/2 * np.kron(tau_z, sigma_0) - 1j*Delta/4 * np.kron(tau_x, sigma_z)
+    for i in range(1, L_x+1):
+      for j in range(1, L_y): 
+        for alpha in range(4):
+          for beta in range(4):
+            M[index(i, j, alpha, L_x, L_y), index(i, j+1, beta, L_x, L_y)] = hopping_y[alpha, beta]
+    return M + M.conj().T
