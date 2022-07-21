@@ -146,11 +146,11 @@ def Hamiltonian_ZKM(t, mu, L_x, L_y, Delta_0, Delta_1, Lambda):
                         c^\dagger_{n,m,\downarrow},
                         -c^\dagger_{n,m,\uparrow})^T
        
-       H = \frac{1}{2} \sum_n^{L_x} \sum_m^{L_y}  \vec{c}^\dagger_{n,m} (-\mu \tau_z\sigma_0 + \Delta_0 \tau_x\sigma_0) \vec{c}_{n,m} +
-           \frac{1}{2} \sum_n^{L_x-1} \sum_m^{L_y} \left( \vec{c}^\dagger_{n,m}\left[ 
+       H =  \sum_n^{L_x} \sum_m^{L_y}  \vec{c}^\dagger_{n,m} (-\mu \tau_z\sigma_0 + \Delta_0 \tau_x\sigma_0) \vec{c}_{n,m} +
+            \sum_n^{L_x-1} \sum_m^{L_y} \left( \vec{c}^\dagger_{n,m}\left[ 
             -t\tau_z\sigma_0 +
              \Delta_1\tau_x\sigma_0 - i\lambda\tau_z\sigma_y \right] \vec{c}_{n+1,m} + H.c. \right) +
-           \frac{1}{2} \sum_n^{L_x} \sum_m^{L_y-1} \left( \vec{c}^\dagger_{n,m}\left[ 
+          \sum_n^{L_x} \sum_m^{L_y-1} \left( \vec{c}^\dagger_{n,m}\left[ 
             -t\tau_z\sigma_0 +
             \Delta_1\tau_x\sigma_0 + i\lambda\tau_z\sigma_x\right] \vec{c}_{n,m+1} + H.c. \right) 
     """
@@ -180,7 +180,7 @@ def Hamiltonian_ZKM_semi_infinite(k, t, mu, L_x, Delta_0, Delta_1, Lambda):
     r"""Returns the H matrix for ZKM model with:
 
     .. math::
-        H_{ZKM} = \frac{1}{2}\sum_k H_k
+        H_{ZKM} = \sum_k H_k
         
         H_k = \sum_{n=1}^{L_x} 
             \vec{c}^\dagger_n\left[ 
