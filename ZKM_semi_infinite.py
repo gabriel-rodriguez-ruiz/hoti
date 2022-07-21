@@ -11,13 +11,13 @@ import matplotlib.pyplot as plt
 from hamiltonians import Hamiltonian_ZKM_semi_infinite_with_Zeeman
 from functions import spectrum
 
-L_x = 100
+L_x = 50
 t = 1
 Delta_0 = -0.4*t*4
 Delta_1 = 0.2*t*4
 mu = -2*t    # topological phase if -3<mu<-1
-Delta_Z = 0.2  #0.2
-theta = 0
+Delta_Z = 0  #0.2
+theta = np.pi/2
 phi = 0
 k = np.linspace(0, np.pi, 200)
 Lambda = 0.5*t

@@ -9,12 +9,12 @@ import numpy as np
 import matplotlib.pyplot as plt
 from hamiltonians import Hamiltonian_ZKM, Zeeman
 
-L_x = 30
-L_y = 30
+L_x = 60
+L_y = 60
 t = 1
 mu = -2*t   # mu=t*Delta_0/Delta_1
-Delta_Z = 0.2  # 0.2
-theta = 0
+Delta_Z = 0  # 0.2
+theta = np.pi/2
 phi = 0
 Delta_0 = -0.4*t*4
 Delta_1 = 0.2*t*4
@@ -50,7 +50,7 @@ plt.colorbar(image)
 ax.set_title(f"{params}")
 ax.set_xlabel("x")
 ax.set_ylabel("y")
-#plt.plot(probability_density[10,:,0])
+#plt.plot(probability_density[0,:,0])
 
 #%% Energies
 
