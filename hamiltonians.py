@@ -326,7 +326,7 @@ def Hamiltonian_A1u_S(t, mu, L_x, L_y, Delta, t_J, Phi):
         for alpha in range(4):
           for beta in range(4):
             M[index(i, j, alpha, L_x, L_y), index(i, j+1, beta, L_x, L_y)] = hopping_y[alpha, beta]
-    hopping_junction_x = t_J/2 * (np.cos(Phi)*np.kron(tau_0, sigma_0) + 1j*np.sin(Phi/2)*np.kron(tau_z, sigma_0))
+    hopping_junction_x = t_J/2 * (np.cos(Phi/2)*np.kron(tau_0, sigma_0) + 1j*np.sin(Phi/2)*np.kron(tau_z, sigma_0))
     for j in range(1, L_y+1): 
       for alpha in range(4):
         for beta in range(4):
