@@ -335,3 +335,49 @@ def Hamiltonian_A1u_S(t, mu, L_x, L_y, Delta, t_J, Phi):
             else:
                 M[index(L_x-1, j, alpha, L_x, L_y), index(L_x, j, beta, L_x, L_y)] = hopping_junction_x[alpha, beta].conj()
     return M + M.conj().T
+
+def Hamiltonian_ZKM_S(t, mu, L_x, L_y, Delta_0, Delta_1, Lambda, t_J, Phi):
+    r"""Return the matrix for ZKM_S model with:
+
+    .. math ::
+       \vec{c_{n,m}} = (c_{n,m,\uparrow},
+                        c_{n,m,\downarrow},
+                        c^\dagger_{n,m,\downarrow},
+                        -c^\dagger_{n,m,\uparrow})^T
+       
+       H =  \sum_n^{L_x} \sum_m^{L_y}  \vec{c}^\dagger_{n,m} (-\mu \tau_z\sigma_0 + \Delta_0 \tau_x\sigma_0) \vec{c}_{n,m} +
+            \sum_n^{L_x-1} \sum_m^{L_y} \left( \vec{c}^\dagger_{n,m}\left[ 
+            -t\tau_z\sigma_0 +
+             \Delta_1\tau_x\sigma_0 - i\lambda\tau_z\sigma_y \right] \vec{c}_{n+1,m} + H.c. \right) +
+          \sum_n^{L_x} \sum_m^{L_y-1} \left( \vec{c}^\dagger_{n,m}\left[ 
+            -t\tau_z\sigma_0 +
+            \Delta_1\tau_x\sigma_0 + i\lambda\tau_z\sigma_x\right] \vec{c}_{n,m+1} + H.c. \right) 
+    """
+    M = np.zeros((4*L_x*L_y, 4*L_x*L_y), dtype=complex)
+    onsite = -mu/2 * np.kron(tau_z, sigma_0) + Delta_0/2 * np.kron(tau_x, sigma_0)
+    for i in range(1, L_x+1):
+      for j in range(1, L_y+1):
+        for alpha in range(4):
+          for beta in range(4):
+            M[index(i, j, alpha, L_x, L_y), index(i, j, beta, L_x, L_y)] = onsite[alpha, beta]   
+    hopping_x = -t * np.kron(tau_z, sigma_0) - 1j*Lambda * np.kron(tau_z, sigma_y) + Delta_1*np.kron(tau_x, sigma_0)
+    for i in range(1, L_x-1):
+      for j in range(1, L_y+1):    
+        for alpha in range(4):
+          for beta in range(4):
+            M[index(i, j, alpha, L_x, L_y), index(i+1, j, beta, L_x, L_y)] = hopping_x[alpha, beta]
+    hopping_y = -t * np.kron(tau_z, sigma_0) + 1j*Lambda*np.kron(tau_z, sigma_x) + Delta_1*np.kron(tau_x, sigma_0)
+    for i in range(1, L_x+1):
+        for j in range(1, L_y): 
+            for alpha in range(4):
+                for beta in range(4):
+                    M[index(i, j, alpha, L_x, L_y), index(i, j+1, beta, L_x, L_y)] = hopping_y[alpha, beta]
+    hopping_junction_x = t_J/2 * (np.cos(Phi/2)*np.kron(tau_0, sigma_0) + 1j*np.sin(Phi/2)*np.kron(tau_z, sigma_0))
+    for j in range(1, L_y+1): 
+        for alpha in range(4):
+            for beta in range(4):
+                if j<=L_y//2:
+                    M[index(L_x-1, j, alpha, L_x, L_y), index(L_x, j, beta, L_x, L_y)] = hopping_junction_x[alpha, beta]
+                else:
+                    M[index(L_x-1, j, alpha, L_x, L_y), index(L_x, j, beta, L_x, L_y)] = hopping_junction_x[alpha, beta].conj()
+    return M + M.conj().T

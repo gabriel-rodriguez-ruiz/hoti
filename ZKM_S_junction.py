@@ -8,20 +8,23 @@ Created on Thu Jul 14 14:59:07 2022
 
 import numpy as np
 import matplotlib.pyplot as plt
-from hamiltonians import Hamiltonian_A1u_S
+from hamiltonians import Hamiltonian_ZKM_S
 
 L_x = 40
 L_y = 40
 t = 1
-Delta = 1
-mu = -2
-Phi = 0   #superconducting phase
-t_J = t/2    #t/2
+mu = -2*t   # mu=t*Delta_0/Delta_1
+Delta_0 = -0.4*t*4
+Delta_1 = 0.2*t*4
+Lambda = 0.5*t
+Phi = 0
+t_J = 0
 
-params = dict(t=t, mu=mu, Delta=Delta, t_J=t_J,
-              Phi=np.round(Phi, 3))
+params = dict(t=t, mu=mu, Delta_0=Delta_0,
+              Delta_1=Delta_1, Lambda=Lambda,
+              t_J=t_J, Phi=np.round(Phi, 2))
 
-eigenvalues, eigenvectors = np.linalg.eigh(Hamiltonian_A1u_S(t=t, mu=mu, L_x=L_x, L_y=L_y, Delta=Delta, t_J=t_J, Phi=Phi))
+eigenvalues, eigenvectors = np.linalg.eigh(Hamiltonian_ZKM_S(t=t, mu=mu, L_x=L_x, L_y=L_y, Delta_0=Delta_0, Delta_1=Delta_1, Lambda=Lambda, t_J=t_J, Phi=Phi))
 zero_modes = eigenvectors[:, 2*(L_x*L_y-1):2*(L_x*L_y+1)]      #4 (2) modes with zero energy (with Zeeman)
 
 creation_up = []  
