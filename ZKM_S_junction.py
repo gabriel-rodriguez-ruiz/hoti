@@ -10,15 +10,15 @@ import numpy as np
 import matplotlib.pyplot as plt
 from hamiltonians import Hamiltonian_ZKM_S
 
-L_x = 40
-L_y = 40
+L_x = 20
+L_y = 20
 t = 1
 mu = -2*t   # mu=t*Delta_0/Delta_1
 Delta_0 = -0.4*t*4
 Delta_1 = 0.2*t*4
 Lambda = 0.5*t
-Phi = 0
-t_J = 0
+Phi = np.pi/4
+t_J = 1
 
 params = dict(t=t, mu=mu, Delta_0=Delta_0,
               Delta_1=Delta_1, Lambda=Lambda,

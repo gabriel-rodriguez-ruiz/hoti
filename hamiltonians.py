@@ -354,18 +354,28 @@ def Hamiltonian_ZKM_S(t, mu, L_x, L_y, Delta_0, Delta_1, Lambda, t_J, Phi):
             \Delta_1\tau_x\sigma_0 + i\lambda\tau_z\sigma_x\right] \vec{c}_{n,m+1} + H.c. \right) 
     """
     M = np.zeros((4*L_x*L_y, 4*L_x*L_y), dtype=complex)
-    onsite = -mu/2 * np.kron(tau_z, sigma_0) + Delta_0/2 * np.kron(tau_x, sigma_0)
-    for i in range(1, L_x+1):
+    onsite_ZKM = -mu/2 * np.kron(tau_z, sigma_0) + Delta_0/2 * np.kron(tau_x, sigma_0)
+    for i in range(1, L_x):
       for j in range(1, L_y+1):
         for alpha in range(4):
           for beta in range(4):
-            M[index(i, j, alpha, L_x, L_y), index(i, j, beta, L_x, L_y)] = onsite[alpha, beta]   
-    hopping_x = -t * np.kron(tau_z, sigma_0) - 1j*Lambda * np.kron(tau_z, sigma_y) + Delta_1*np.kron(tau_x, sigma_0)
+            M[index(i, j, alpha, L_x, L_y), index(i, j, beta, L_x, L_y)] = onsite_ZKM[alpha, beta]   
+    onsite_S = -mu/2 * np.kron(tau_z, sigma_0)
+    for j in range(1, L_y+1):
+        for alpha in range(4):
+            for beta in range(4):
+                M[index(L_x, j, alpha, L_x, L_y), index(L_x, j, beta, L_x, L_y)] = onsite_S[alpha, beta]       
+    hopping_x_ZKM = -t * np.kron(tau_z, sigma_0) - 1j*Lambda * np.kron(tau_z, sigma_y) + Delta_1*np.kron(tau_x, sigma_0)
     for i in range(1, L_x-1):
       for j in range(1, L_y+1):    
         for alpha in range(4):
           for beta in range(4):
-            M[index(i, j, alpha, L_x, L_y), index(i+1, j, beta, L_x, L_y)] = hopping_x[alpha, beta]
+            M[index(i, j, alpha, L_x, L_y), index(i+1, j, beta, L_x, L_y)] = hopping_x_ZKM[alpha, beta]
+    hopping_x_S = -t * np.kron(tau_z, sigma_0) + Delta_1*np.kron(tau_x, sigma_0)
+    for j in range(1, L_y+1):    
+      for alpha in range(4):
+        for beta in range(4):
+          M[index(L_x-1, j, alpha, L_x, L_y), index(L_x, j, beta, L_x, L_y)] = hopping_x_S[alpha, beta]
     hopping_y = -t * np.kron(tau_z, sigma_0) + 1j*Lambda*np.kron(tau_z, sigma_x) + Delta_1*np.kron(tau_x, sigma_0)
     for i in range(1, L_x+1):
         for j in range(1, L_y): 
