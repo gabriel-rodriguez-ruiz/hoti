@@ -309,11 +309,16 @@ def Hamiltonian_A1u_S(t, mu, L_x, L_y, Delta, t_J, Phi):
     """
     M = np.zeros((4*(L_x)*L_y, 4*(L_x)*L_y), dtype=complex)
     onsite = -mu/4 * np.kron(tau_z, sigma_0)   # para no duplicar al sumar la traspuesta
-    for i in range(1, L_x+1):
+    for i in range(1, L_x):
       for j in range(1, L_y+1):
         for alpha in range(4):
           for beta in range(4):
             M[index(i, j, alpha, L_x, L_y), index(i, j, beta, L_x, L_y)] = onsite[alpha, beta]   
+    onsite_S = -mu/4 * np.kron(tau_z, sigma_0) + Delta/4*np.kron(tau_x, sigma_0) 
+    for j in range(1, L_y+1):
+      for alpha in range(4):
+        for beta in range(4):
+          M[index(L_x, j, alpha, L_x, L_y), index(L_x, j, beta, L_x, L_y)] = onsite_S[alpha, beta]
     hopping_x = -t/2 * np.kron(tau_z, sigma_0) - 1j*Delta/4 * np.kron(tau_x, sigma_x)
     for i in range(1, L_x-1):
       for j in range(1, L_y+1):    
@@ -321,7 +326,7 @@ def Hamiltonian_A1u_S(t, mu, L_x, L_y, Delta, t_J, Phi):
           for beta in range(4):
             M[index(i, j, alpha, L_x, L_y), index(i+1, j, beta, L_x, L_y)] = hopping_x[alpha, beta]
     hopping_y = -t/2 * np.kron(tau_z, sigma_0) - 1j*Delta/4 * np.kron(tau_x, sigma_y)
-    for i in range(1, L_x+1):
+    for i in range(1, L_x):
       for j in range(1, L_y): 
         for alpha in range(4):
           for beta in range(4):

@@ -10,16 +10,16 @@ import numpy as np
 import matplotlib.pyplot as plt
 from hamiltonians import Hamiltonian_A1u_S
 
-L_x = 20
-L_y = 50
+L_x = 40
+L_y = 40
 t = 1
 Delta = 1
 mu = -2
-Phi = np.pi   #superconducting phase
-t_J = t/2    #t/2
+Phi = 0   #superconducting phase
+t_J = 0    #t/2
 
 params = dict(t=t, mu=mu, Delta=Delta, t_J=t_J,
-              Phi=np.round(Phi, 3))
+              Phi=Phi)
 
 eigenvalues, eigenvectors = np.linalg.eigh(Hamiltonian_A1u_S(t=t, mu=mu, L_x=L_x, L_y=L_y, Delta=Delta, t_J=t_J, Phi=Phi))
 zero_modes = eigenvectors[:, 2*(L_x*L_y-1):2*(L_x*L_y+1)]      #4 (2) modes with zero energy (with Zeeman)
@@ -44,7 +44,7 @@ plt.colorbar(image)
 #ax.set_title(f"{params}")
 ax.set_xlabel("x")
 ax.set_ylabel("y")
-ax.text(5,25, rf'$t_J={params["t_J"]}; \Phi={params["Phi"]}$')
+ax.text(5,25, rf'$t_J={params["t_J"]}; \Phi={np.round(params["Phi"], 2)}$')
 #plt.plot(probability_density[10,:,0])
 plt.tight_layout()
 #%% Energies
