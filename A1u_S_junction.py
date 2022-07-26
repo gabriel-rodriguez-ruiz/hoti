@@ -10,12 +10,12 @@ import numpy as np
 import matplotlib.pyplot as plt
 from hamiltonians import Hamiltonian_A1u_S
 
-L_x = 40
-L_y = 40
+L_x = 20
+L_y = 50
 t = 1
 Delta = 1
 mu = -2
-Phi = 0   #superconducting phase
+Phi = np.pi   #superconducting phase
 t_J = t/2    #t/2
 
 params = dict(t=t, mu=mu, Delta=Delta, t_J=t_J,
