@@ -15,8 +15,8 @@ L_y = 40
 t = 1
 Delta = 1
 mu = -2
-Phi = 0   #superconducting phase
-t_J = 0    #t/2
+Phi = np.pi/2   #superconducting phase
+t_J = t    #t/2
 
 params = dict(t=t, mu=mu, Delta=Delta, t_J=t_J,
               Phi=Phi)

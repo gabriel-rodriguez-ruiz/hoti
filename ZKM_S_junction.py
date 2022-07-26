@@ -17,12 +17,12 @@ mu = -2*t   # mu=t*Delta_0/Delta_1
 Delta_0 = -0.4*t*4
 Delta_1 = 0.2*t*4
 Lambda = 0.5*t
-Phi = np.pi/6
-t_J = 1
+Phi = 0
+t_J = 0
 
 params = dict(t=t, mu=mu, Delta_0=Delta_0,
               Delta_1=Delta_1, Lambda=Lambda,
-              t_J=t_J, Phi=np.round(Phi, 2))
+              t_J=t_J, Phi=Phi)
 
 eigenvalues, eigenvectors = np.linalg.eigh(Hamiltonian_ZKM_S(t=t, mu=mu, L_x=L_x, L_y=L_y, Delta_0=Delta_0, Delta_1=Delta_1, Lambda=Lambda, t_J=t_J, Phi=Phi))
 zero_modes = eigenvectors[:, 2*(L_x*L_y-1):2*(L_x*L_y+1)]      #4 (2) modes with zero energy (with Zeeman)
@@ -47,7 +47,7 @@ plt.colorbar(image)
 #ax.set_title(f"{params}")
 ax.set_xlabel("x")
 ax.set_ylabel("y")
-ax.text(5,25, rf'$t_J={params["t_J"]}; \Phi={params["Phi"]}$')
+ax.text(5,25, rf'$t_J={params["t_J"]}; \Phi={np.round(params["Phi"],2)}$')
 #plt.plot(probability_density[10,:,0])
 plt.tight_layout()
 #%% Energies
