@@ -393,7 +393,7 @@ def Hamiltonian_ZKM_S(t, mu, L_x, L_y, Delta_0, Delta_1, Lambda, t_J, Phi):
     return M + M.conj().T
 
 def Hamiltonian_Eu_S(t, mu, L_x, L_y, Delta, t_J, Phi):
-    r"""Return the matrix for A1u model in a junction with a superconductor with:
+    r"""Return the matrix for Eu model in a junction with a superconductor with:
 
     .. math ::
        \vec{c_{n,m}} = (c_{n,m,\uparrow},
@@ -401,13 +401,13 @@ def Hamiltonian_Eu_S(t, mu, L_x, L_y, Delta, t_J, Phi):
                         c^\dagger_{n,m,\downarrow},
                         -c^\dagger_{n,m,\uparrow})^T
        
-       H_{A1u} = \frac{1}{2} \sum_n^{L_x-1} \sum_m^{L_y} (-\mu \vec{c}^\dagger_{n,m} \tau_z\sigma_0  \vec{c}_{n,m}) +
+       H_{Eu} = \frac{1}{2} \sum_n^{L_x-1} \sum_m^{L_y} (-\mu \vec{c}^\dagger_{n,m} \tau_z\sigma_0  \vec{c}_{n,m}) +
            \frac{1}{2} \sum_n^{L_x-2} \sum_m^{L_y} \left( \vec{c}^\dagger_{n,m}\left[ 
             -t\tau_z\sigma_0 -
-            i\frac{\Delta}{2} \tau_x\sigma_x \right] \vec{c}_{n+1,m} + H.c. \right) +
+            i\frac{\Delta}{2} \tau_x\sigma_z \right] \vec{c}_{n+1,m} + H.c. \right) +
            \frac{1}{2} \sum_n^{L_x-1} \sum_m^{L_y-1} \left( \vec{c}^\dagger_{n,m}\left[ 
             -t\tau_z\sigma_0 -
-            i\frac{\Delta}{2} \tau_x\sigma_y \right] \vec{c}_{n,m+1} + H.c. \right) 
+            i\frac{\Delta}{2} \tau_x\sigma_z \right] \vec{c}_{n,m+1} + H.c. \right) 
        
         H_J = t_J/2\sum_m^{L_y}[\vec{c}_{L_x-1,m}(cos(\phi/2)\tau_0\sigma_0+(\theta(L_y/2-m)-\theta(m-L_y/2))isin(\phi/2)\tau_z\sigma_0)\vec{c}_{L_x,m}+H.c.]
     """
