@@ -409,6 +409,10 @@ def Hamiltonian_Eu_S(t, mu, L_x, L_y, Delta, t_J, Phi):
             -t\tau_z\sigma_0 -
             i\frac{\Delta}{2} \tau_x\sigma_z \right] \vec{c}_{n,m+1} + H.c. \right) 
        
+        H_S = \sum_m^{L_y}  \vec{c}^\dagger_{L_x,m} (-\mu \tau_z\sigma_0 + \Delta_0 \tau_x\sigma_0) \vec{c}_{L_x,m} +
+            \sum_m^{L_y-1} \left( \vec{c}^\dagger_{L_x,m}\left[ 
+             -t\tau_z\sigma_0 \right] \vec{c}_{L_x,m+1} + H.c. \right) 
+     
         H_J = t_J/2\sum_m^{L_y}[\vec{c}_{L_x-1,m}(cos(\phi/2)\tau_0\sigma_0+(\theta(L_y/2-m)-\theta(m-L_y/2))isin(\phi/2)\tau_z\sigma_0)\vec{c}_{L_x,m}+H.c.]
     """
     M = np.zeros((4*(L_x)*L_y, 4*(L_x)*L_y), dtype=complex)
@@ -429,12 +433,17 @@ def Hamiltonian_Eu_S(t, mu, L_x, L_y, Delta, t_J, Phi):
         for alpha in range(4):
           for beta in range(4):
             M[index(i, j, alpha, L_x, L_y), index(i+1, j, beta, L_x, L_y)] = hopping_x_Eu[alpha, beta]
-    hopping_y = -t/2 * np.kron(tau_z, sigma_0) - 1j*Delta/4 * np.kron(tau_x, sigma_z)
+    hopping_y_Eu = -t/2 * np.kron(tau_z, sigma_0) - 1j*Delta/4 * np.kron(tau_x, sigma_z)
     for i in range(1, L_x):
       for j in range(1, L_y): 
         for alpha in range(4):
           for beta in range(4):
-            M[index(i, j, alpha, L_x, L_y), index(i, j+1, beta, L_x, L_y)] = hopping_y[alpha, beta]
+            M[index(i, j, alpha, L_x, L_y), index(i, j+1, beta, L_x, L_y)] = hopping_y_Eu[alpha, beta]
+    hopping_y_S = -t * np.kron(tau_z, sigma_0)
+    for j in range(1, L_y-2):
+        for alpha in range(4):
+            for beta in range(4):
+                M[index(L_x, j, alpha, L_x, L_y), index(L_x, j+1, beta, L_x, L_y)] = hopping_y_S[alpha, beta]
     hopping_junction_x = t_J/2 * (np.cos(Phi/2)*np.kron(tau_0, sigma_0) + 1j*np.sin(Phi/2)*np.kron(tau_z, sigma_0))
     for j in range(1, L_y+1): 
       for alpha in range(4):
