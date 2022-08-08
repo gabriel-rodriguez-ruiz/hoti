@@ -10,8 +10,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 from hamiltonians import Hamiltonian_Eu_S
 
-L_x = 20
-L_y = 20
+L_x = 30
+L_y = 30
 t = 1
 Delta = 1
 mu = -2
