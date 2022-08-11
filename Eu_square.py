@@ -8,13 +8,13 @@ import numpy as np
 import matplotlib.pyplot as plt
 from hamiltonians import Hamiltonian_Eu, Zeeman
 
-L_x = 30
-L_y = 30
+L_x = 40
+L_y = 40
 t = 1
 Delta = 1
 mu = -2
-Delta_Z = 0.2   #0.2
-theta = np.pi/2
+Delta_Z = 0.2     #0.2
+theta = 0
 phi = 0
 
 params = dict(t=t, mu=mu, Delta=Delta,
@@ -35,7 +35,7 @@ for i in range(4):      #each list has 4 elements corresponding to the 4 degener
     creation_up.append((zero_modes[3::4, i]).reshape((L_x, L_y)))
 
 probability_density = np.zeros((L_x,L_y, 4))
-for i in range(4):      #each list has 4 elements corresponding to the 4 degenerated energies, if Zeeman is on only index 1 and 2 are degenerate
+for i in range(4):      #each list has 4 elements corresponding to the 4 degenerated energies, if Zeeman is on, only index 1 and 2 are degenerate
     probability_density[:,:,i] = np.abs(creation_up[i])**2 + np.abs(creation_down[i])**2 + np.abs(destruction_down[i])**2 + np.abs(destruction_up[i])**2
 
 fig, ax = plt.subplots(num="Zeeman", clear=True)
@@ -44,6 +44,7 @@ plt.colorbar(image)
 ax.set_title(f"{params}")
 ax.set_xlabel("x")
 ax.set_ylabel("y")
+plt.tight_layout()
 #plt.plot(probability_density[10,:,0])
 
 #%% Energies
