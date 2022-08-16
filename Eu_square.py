@@ -8,12 +8,12 @@ import numpy as np
 import matplotlib.pyplot as plt
 from hamiltonians import Hamiltonian_Eu, Zeeman
 
-L_x = 40
-L_y = 40
+L_x = 30
+L_y = 30
 t = 1
 Delta = 1
 mu = -2
-Delta_Z = 0.2     #0.2
+Delta_Z = 0     #0.2
 theta = 0
 phi = 0
 
