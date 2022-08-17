@@ -13,8 +13,8 @@ L_y = 30
 t = 1
 Delta = 1
 mu = -2
-Delta_Z = 0     #0.2
-theta = 0
+Delta_Z = 0.1     #0.2
+theta = np.pi/2
 phi = 0
 
 params = dict(t=t, mu=mu, Delta=Delta,
@@ -22,7 +22,7 @@ params = dict(t=t, mu=mu, Delta=Delta,
 
 eigenvalues, eigenvectors = np.linalg.eigh(Hamiltonian_Eu(t=t, mu=mu, L_x=L_x, L_y=L_y, Delta=Delta) +
                                            Zeeman(theta=theta, Delta_Z=Delta_Z, L_x=L_x, L_y=L_y, phi=phi))
-zero_modes = eigenvectors[:, 2*(L_x*L_y-1):2*(L_x*L_y+1)]      #4 (2) modes with zero energy (with Zeeman)
+zero_modes = eigenvectors[:, 2*(L_x*L_y-1)-40:2*(L_x*L_y+1)-40]      #4 (2) modes with zero energy (with Zeeman)
 
 creation_up = []  
 creation_down = []
@@ -52,4 +52,4 @@ plt.tight_layout()
 plt.figure("Energies", clear=True)
 plt.scatter(np.arange(0, len(eigenvalues), 1), eigenvalues)
 plt.xlim([2*(L_x*L_y-5), 2*(L_x*L_y+5)])
-plt.ylim([-0.1, 0.1])
+plt.ylim([-0.1e-10, 0.1e-10])

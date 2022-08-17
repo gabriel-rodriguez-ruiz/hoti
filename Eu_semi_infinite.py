@@ -14,8 +14,8 @@ L_x = 50
 t = 1
 Delta = 1
 mu = -2    # topological phase if 0<mu<4
-Delta_Z = 0.2   #0.2
-theta = np.pi/4
+Delta_Z = 0.1   #0.2
+theta = np.pi/2
 phi = np.pi/4
 k = np.linspace(0, np.pi, 200)
 
