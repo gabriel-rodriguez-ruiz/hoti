@@ -10,7 +10,7 @@ import matplotlib.pyplot as plt
 from hamiltonians import Hamiltonian_Eu_semi_infinite_with_Zeeman
 from functions import spectrum
 
-L_x = 50
+L_x = 100
 t = 1
 Delta = 1
 mu = -2    # topological phase if 0<mu<4
