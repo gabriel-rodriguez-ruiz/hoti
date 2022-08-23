@@ -132,6 +132,28 @@ def Zeeman(theta, phi, Delta_Z, L_x, L_y):
                   M[index(i, j, alpha, L_x, L_y), index(i, j, beta, L_x, L_y)] = onsite[alpha, beta]
     return M
 
+def Zeeman_semi_infinite(theta, phi, Delta_Z, L):
+    r""" Return the Zeeman Hamiltonian matrix in 1D.
+    
+    .. math::
+        H_Z = \frac{\Delta_Z}{2} \sum_n^{L} \vec{c}^\dagger_{n}
+        \tau_0(\cos(\varphi)\sin(\theta)\sigma_x + \sin(\varphi)\sin(\theta)\sigma_y + \cos(\theta)\sigma_z)\vec{c}_{n}
+    
+        \vec{c}_{n} = (c_{n,\uparrow},
+                         c_{n,\downarrow},
+                         c^\dagger_{n,\downarrow},
+                         -c^\dagger_{n,\uparrow})^T
+    """
+    M = np.zeros((4*L, 4*L), dtype=complex)
+    onsite = Delta_Z/2*( np.cos(phi)*np.sin(theta)*np.kron(tau_0, sigma_x) +
+                        np.sin(phi)*np.sin(theta)*np.kron(tau_0, sigma_y) +
+                        np.cos(theta)*np.kron(tau_0, sigma_z))
+    for i in range(1, L+1):
+        for alpha in range(4):
+            for beta in range(4):
+                M[index_semi_infinite(i, alpha, L), index_semi_infinite(i, beta, L)] = onsite[alpha, beta]
+    return M
+
 def Hamiltonian_A1u_semi_infinite_with_Zeeman(k, t, mu, L_x, Delta, Delta_Z, theta, phi):
     H_0 = Hamiltonian_A1u_semi_infinite(k, t, mu, L_x, Delta)
     H_Z = Zeeman(theta, phi, Delta_Z, L_x, L_y=1)
@@ -213,7 +235,7 @@ def Hamiltonian_ZKM_semi_infinite(k, t, mu, L_x, Delta_0, Delta_1, Lambda):
 
 def Hamiltonian_ZKM_semi_infinite_with_Zeeman(k, t, mu, L_x, Delta_0, Delta_1, Lambda, Delta_Z, theta, phi):
     H_0 = Hamiltonian_ZKM_semi_infinite(k, t, mu, L_x, Delta_0, Delta_1, Lambda)
-    H_Z = Zeeman(theta, phi, Delta_Z, L_x, L_y=1)
+    H_Z = Zeeman_semi_infinite(theta, phi, Delta_Z, L_x)
     return H_0 + H_Z
 
 def Hamiltonian_Eu_semi_infinite(k, t, mu, L_x, Delta):
@@ -247,7 +269,7 @@ def Hamiltonian_Eu_semi_infinite(k, t, mu, L_x, Delta):
 
 def Hamiltonian_Eu_semi_infinite_with_Zeeman(k, t, mu, L_x, Delta, Delta_Z, theta, phi):
     H_0 = Hamiltonian_Eu_semi_infinite(k, t, mu, L_x, Delta)
-    H_Z = Zeeman(theta, phi, Delta_Z, L_x, L_y=1)
+    H_Z = Zeeman_semi_infinite(theta, phi, Delta_Z, L_x)
     return H_0 + H_Z
 
 def Hamiltonian_Eu(t, mu, L_x, L_y, Delta):
