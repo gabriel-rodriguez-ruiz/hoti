@@ -16,7 +16,7 @@ Delta = 1
 mu = -2
 Delta_Z = 0.2   #0.2
 theta = np.pi/2
-phi = np.pi/3
+phi = np.pi/2
 
 params = dict(t=t, mu=mu, Delta=Delta,
               Delta_Z=Delta_Z, theta=np.round(theta,2), phi=np.round(phi, 2))
