@@ -14,9 +14,9 @@ L_x = 50
 t = 1
 Delta = 1
 mu = -2    # topological phase if 0<mu<4
-Delta_Z = 0.2   #0.2
+Delta_Z = 0.1   #0.2
 theta = np.pi/2
-phi = np.pi/2
+phi = 0
 k = np.linspace(0, np.pi, 200)
 
 params = dict(t=t, mu=mu, Delta=Delta, L_x=L_x,
@@ -40,5 +40,6 @@ left_minus = zero_modes[::,0]-zero_modes[::,1]
 right_minus = zero_modes[::,0]+zero_modes[::,1]
 right_plus = zero_modes[::,2]+zero_modes[::,3]
 left_plus = zero_modes[::,2]-zero_modes[::,3]
-plt.plot(np.abs(left_minus))
+plt.plot(np.abs(left_minus[::4]))
+#plt.plot(np.abs(zero_modes[::4,0]))
 
