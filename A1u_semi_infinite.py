@@ -14,7 +14,7 @@ L_x = 50
 t = 1
 Delta = 1
 mu = -2    # topological phase if 0<mu<4
-Delta_Z = 0.1   #0.2
+Delta_Z = 7   #0.2
 theta = np.pi/2
 phi = 0
 k = np.linspace(0, np.pi, 200)
@@ -43,3 +43,7 @@ left_plus = zero_modes[::,2]-zero_modes[::,3]
 plt.plot(np.abs(left_minus[::4]))
 #plt.plot(np.abs(zero_modes[::4,0]))
 
+#%% Degeneracy
+
+plt.plot(eigenvalues, "o")
+plt.xlim([2*(L_x-1)-5, 2*(L_x+1)+5])
