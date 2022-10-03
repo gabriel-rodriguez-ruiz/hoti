@@ -14,7 +14,7 @@ L_x = 50
 t = 1
 Delta = 1
 mu = -2    # topological phase if 0<mu<4
-Delta_Z = 7   #0.2
+Delta_Z = 0   #0.2
 theta = np.pi/2
 phi = 0
 k = np.linspace(0, np.pi, 200)
@@ -33,7 +33,7 @@ plt.tight_layout()
 
 #%%
 
-eigenvalues, eigenvectors = np.linalg.eigh(Hamiltonian_A1u_semi_infinite_with_Zeeman(0.1, t, mu, L_x, Delta, Delta_Z, theta, phi))
+eigenvalues, eigenvectors = np.linalg.eigh(Hamiltonian_A1u_semi_infinite_with_Zeeman(0, t, mu, L_x, Delta, Delta_Z, theta, phi))
 zero_modes = eigenvectors[:, 2*(L_x-1):2*(L_x+1)]
 plt.figure()
 left_minus = zero_modes[::,0]-zero_modes[::,1]
