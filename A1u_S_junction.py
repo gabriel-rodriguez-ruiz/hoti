@@ -10,8 +10,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 from hamiltonians import Hamiltonian_A1u_S
 
-L_x = 40
-L_y = 40
+L_x = 30
+L_y = 30
 t = 1
 Delta = 1
 mu = -2
@@ -52,3 +52,18 @@ ax2 = fig.add_axes([0.3, 0.3, 0.25, 0.25])
 ax2.scatter(np.arange(0, len(eigenvalues), 1), eigenvalues)
 ax2.set_xlim([2*(L_x*L_y-5), 2*(L_x*L_y+5)])
 ax2.set_ylim([-0.05, 0.05])
+ 
+#%% Spin determination
+from functions import mean_spin, mean_spin_xy
+
+zero_plus_state = np.stack((destruction_up[2], destruction_down[2], creation_down[2], creation_up[2]), axis=2) #positive energy eigenvector splitted in components
+corner_state = zero_plus_state[L_x-2, L_y//2, :].reshape(4,1)  #positive energy point state localized at the junction
+
+# Spin mean value
+spin_mean_value = mean_spin(corner_state)
+
+spin = mean_spin_xy(zero_plus_state)
+fig, ax = plt.subplots()
+image = ax.imshow(spin[:,:,2].T, cmap="Blues", origin="lower") #I have made the transpose and changed the origin to have xy axes as usually
+plt.colorbar(image)
+image.set_clim(np.min(spin[:,:,1].T), np.max(spin[:,:,1].T))

@@ -14,6 +14,7 @@ L_y = 30
 t = 1
 Delta = 1
 mu = -2
+
 Delta_Z = 0   #0.2
 theta = np.pi/2
 phi = np.pi/3
