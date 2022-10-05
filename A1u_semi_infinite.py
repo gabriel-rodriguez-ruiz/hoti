@@ -14,7 +14,7 @@ L_x = 50
 t = 1
 Delta = 1
 mu = -2    # topological phase if 0<mu<4
-Delta_Z = 0.2   #0.2
+Delta_Z = 0   #0.2
 theta = 0
 phi = np.pi/2
 k = np.linspace(0, np.pi, 200)
@@ -30,3 +30,5 @@ ax.set_ylabel("E")
 #ax.set_title(f'$\Delta_Z={params["Delta_Z"]}$')
 ax.text(0, 3, rf'$\Delta_Z={params["Delta_Z"]}; \theta={params["theta"]}; \varphi={params["phi"]}$')
 plt.tight_layout()
+
+eigenvalues, eigenvectors= np.linalg.eigh(Hamiltonian_A1u_semi_infinite_with_Zeeman(k=0.1, t=t, mu=mu, L_x=L_x, Delta=Delta, Delta_Z=Delta_Z, theta=theta, phi=phi))

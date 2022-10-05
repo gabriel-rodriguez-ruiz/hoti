@@ -14,7 +14,7 @@ L_y = 30
 t = 1
 Delta = 1
 mu = -2
-Delta_Z = 0.2   #0.2
+Delta_Z = 0   #0.2
 theta = np.pi/2
 phi = np.pi/3
 
@@ -45,11 +45,13 @@ plt.colorbar(image)
 #ax.set_title(f"{params}")
 ax.set_xlabel("x")
 ax.set_ylabel("y")
-ax.text(5,25, rf'$\Delta_Z={params["Delta_Z"]}; \theta={params["theta"]}; \varphi={params["phi"]}$')
+#ax.text(5,25, rf'$\Delta_Z={params["Delta_Z"]}; \theta={params["theta"]}; \varphi={params["phi"]}$')
 #plt.plot(probability_density[10,:,0])
 plt.tight_layout()
 #%% Energies
+"""
 ax2 = fig.add_axes([0.3, 0.3, 0.25, 0.25])
 ax2.scatter(np.arange(0, len(eigenvalues), 1), eigenvalues)
 ax2.set_xlim([2*(L_x*L_y-5), 2*(L_x*L_y+5)])
 ax2.set_ylim([-0.1, 0.1])
+"""
