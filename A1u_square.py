@@ -57,16 +57,36 @@ ax2.set_ylim([-0.1, 0.1])
 #%% Spin determination
 from functions import mean_spin, mean_spin_xy
 
-zero_plus_state = np.stack((destruction_up[0], destruction_down[0], creation_down[0], creation_up[0]), axis=2) #positive energy eigenvector splitted in components
+zero_plus_state = np.stack((destruction_up[2], destruction_down[2], creation_down[2], creation_up[2]), axis=2) #positive energy eigenvector splitted in components
 corner_state = zero_plus_state[L_x-2, L_y//2, :].reshape(4,1)  #positive energy point state localized at the junction
-corner_state_normalized = corner_state/np.linalg.norm(corner_state) #normalization
-zero_plus_state_normalized = zero_plus_state/np.linalg.norm(zero_plus_state, axis=2, keepdims=True)
+corner_state_normalized = corner_state/np.linalg.norm(corner_state[:2]) #normalization with only particle part
+zero_plus_state_normalized = zero_plus_state/np.linalg.norm(zero_plus_state[:,:,:2], axis=2, keepdims=True)
 
 # Spin mean value
 spin_mean_value = mean_spin(corner_state_normalized)
 
 spin = mean_spin_xy(zero_plus_state_normalized)
+# fig, ax = plt.subplots()
+# image = ax.imshow(spin[:,:,2].T, cmap="Blues", origin="lower") #I have made the transpose and changed the origin to have xy axes as usually
+# plt.colorbar(image)
+#image.set_clim(np.min(spin[:,:,1].T), np.max(spin[:,:,1].T))
+
+# Meshgrid
+x, y = np.meshgrid(np.linspace(0, L_x-1, L_x), 
+                    np.linspace(L_y-1, 0, L_y))
+                    #np.linspace(0, L_y-1, L_y))
+
+
+  
+# Directional vectors
+u = spin[:, :, 0].T   #x component
+v = spin[:, :, 1].T   #y component
+
+# Plotting Vector Field with QUIVER
+ax.quiver(x, y, u, v, color='r')
+ax.set_title('Spin Field in the plane')
+
+#%% Spin in z
 fig, ax = plt.subplots()
 image = ax.imshow(spin[:,:,2].T, cmap="Blues", origin="lower") #I have made the transpose and changed the origin to have xy axes as usually
 plt.colorbar(image)
-#image.set_clim(np.min(spin[:,:,1].T), np.max(spin[:,:,1].T))
