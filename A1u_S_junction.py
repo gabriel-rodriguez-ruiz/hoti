@@ -15,7 +15,7 @@ L_y = 30
 t = 1
 Delta = 1
 mu = -2
-Phi = np.pi/2   #superconducting phase
+Phi = 0.5*np.pi   #superconducting phase
 t_J = 1    #t/2
 
 params = dict(t=t, mu=mu, Delta=Delta, t_J=t_J,
@@ -90,3 +90,5 @@ ax.set_title('Spin Field in the plane')
 fig, ax = plt.subplots()
 image = ax.imshow(spin[:,:,2].T, cmap="Blues", origin="lower") #I have made the transpose and changed the origin to have xy axes as usually
 plt.colorbar(image)
+
+
