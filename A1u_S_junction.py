@@ -15,8 +15,8 @@ L_y = 30
 t = 1
 Delta = 1
 mu = -2
-Phi = np.pi/2   #superconducting phase
-t_J = t    #t/2
+Phi = 0.5*np.pi   #superconducting phase
+t_J = 1    #t/2
 
 params = dict(t=t, mu=mu, Delta=Delta, t_J=t_J,
               Phi=Phi)
@@ -48,22 +48,47 @@ ax.text(5,25, rf'$t_J={params["t_J"]}; \Phi={np.round(params["Phi"], 2)}$')
 #plt.plot(probability_density[10,:,0])
 plt.tight_layout()
 #%% Energies
+
 ax2 = fig.add_axes([0.3, 0.3, 0.25, 0.25])
 ax2.scatter(np.arange(0, len(eigenvalues), 1), eigenvalues)
 ax2.set_xlim([2*(L_x*L_y-5), 2*(L_x*L_y+5)])
 ax2.set_ylim([-0.05, 0.05])
- 
+
 #%% Spin determination
 from functions import mean_spin, mean_spin_xy
 
 zero_plus_state = np.stack((destruction_up[2], destruction_down[2], creation_down[2], creation_up[2]), axis=2) #positive energy eigenvector splitted in components
 corner_state = zero_plus_state[L_x-2, L_y//2, :].reshape(4,1)  #positive energy point state localized at the junction
+corner_state_normalized = corner_state/np.linalg.norm(corner_state[:2]) #normalization with only particle part
+zero_plus_state_normalized = zero_plus_state/np.linalg.norm(zero_plus_state[:,:,:2], axis=2, keepdims=True)
 
 # Spin mean value
-spin_mean_value = mean_spin(corner_state)
+spin_mean_value = mean_spin(corner_state_normalized)
 
-spin = mean_spin_xy(zero_plus_state)
+spin = mean_spin_xy(zero_plus_state_normalized)
+# fig, ax = plt.subplots()
+# image = ax.imshow(spin[:,:,2].T, cmap="Blues", origin="lower") #I have made the transpose and changed the origin to have xy axes as usually
+# plt.colorbar(image)
+#image.set_clim(np.min(spin[:,:,1].T), np.max(spin[:,:,1].T))
+
+# Meshgrid
+x, y = np.meshgrid(np.linspace(0, L_x-1, L_x), 
+                    np.linspace(L_y-1, 0, L_y))
+                    #np.linspace(0, L_y-1, L_y))
+
+
+  
+# Directional vectors
+u = spin[:, :, 0].T   #x component
+v = spin[:, :, 1].T   #y component
+
+# Plotting Vector Field with QUIVER
+ax.quiver(x, y, u, v, color='r')
+ax.set_title('Spin Field in the plane')
+
+#%% Spin in z
 fig, ax = plt.subplots()
 image = ax.imshow(spin[:,:,2].T, cmap="Blues", origin="lower") #I have made the transpose and changed the origin to have xy axes as usually
 plt.colorbar(image)
-image.set_clim(np.min(spin[:,:,1].T), np.max(spin[:,:,1].T))
+
+

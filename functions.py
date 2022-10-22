@@ -18,9 +18,13 @@ tau_y = np.array([[0, -1j], [1j, 0]])
 tau_z = np.array([[1, 0], [0, -1]])
 
 # Spin operators
-S_x = np.kron(tau_z, sigma_x)
-S_y = np.kron(tau_z, sigma_y)
-S_z = np.kron(tau_z, sigma_z)
+P = np.array([[1, 0, 0, 0], [0, 1, 0, 0]])  #particle projector
+# S_x = np.kron(tau_0, sigma_x)
+# S_y = np.kron(tau_0, sigma_y)
+# S_z = np.kron(tau_0, sigma_z)
+S_x = P.T@sigma_x@P
+S_y = P.T@sigma_y@P
+S_z = P.T@sigma_z@P
 
 def spectrum(system, k_values, **params):
     """Returns an array whose rows are the eigenvalues of the system for
@@ -43,7 +47,7 @@ def mean_spin(state):
     spin_mean_value = np.concatenate([state.T.conj()@S_x@state,
                                       state.T.conj()@S_y@state,
                                       state.T.conj()@S_z@state])
-    return spin_mean_value
+    return np.real(spin_mean_value)
 
 def mean_spin_xy(state):
     N_x, N_y, N_z = np.shape(state)     #N_z is always 4
