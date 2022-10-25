@@ -19,7 +19,7 @@ tau_z = np.array([[1, 0], [0, -1]])
 def index(i, j, alpha, L_x, L_y):
   """Return the index of basis vector given the site (i,j)
   and spin index alpha for i in {1, ..., L_x} and
-  j in {1, ..., L_y}
+  j in {1, ..., L_y}. The site (1,1) corresponds to the lower left real space position.
   
   .. math ::
      (c_{11}, c_{12}, ..., c_{1L_x}, c_{21}, ..., c_{L_xL_y})^T
