@@ -1,29 +1,28 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Thu Jul 14 14:59:07 2022
+Created on Wed Oct 26 10:12:42 2022
 
-@author: usuario
+@author: gabriel
 """
 
 import numpy as np
 import matplotlib.pyplot as plt
-from hamiltonians import Hamiltonian_A1u_S
+from hamiltonians import Hamiltonian_A1u_A1u_junction
 from functions import probability_density
 
-L_x = 50
-L_y = 50
+L_x = 60
+L_y = 30
 t = 1
 Delta = 1
 mu = -2
-Phi = 0.5*np.pi   #superconducting phase
+Phi = 3*np.pi/4   #superconducting phase
 t_J = 1    #t/2
-index = 2
-
-H = Hamiltonian_A1u_S(t=t, mu=mu, L_x=L_x, L_y=L_y, Delta=Delta, t_J=t_J, Phi=Phi)
+index = 0   #which zero mode
+H = Hamiltonian_A1u_A1u_junction(t=t, mu=mu, L_x=L_x, L_y=L_y, Delta=Delta, t_J=t_J, Phi=Phi)
 probability_density_2D, eigenvalues, eigenvectors = probability_density(H, L_x, L_y, index=index)
 
-fig, ax = plt.subplots(num="Zeeman", clear=True)
+fig, ax = plt.subplots()
 image = ax.imshow(probability_density_2D, cmap="Blues", origin="lower") #I have made the transpose and changed the origin to have xy axes as usually
 plt.colorbar(image)
 #ax.set_title(f"{params}")
@@ -32,25 +31,25 @@ ax.set_ylabel("y")
 ax.text(5,25, rf'$t_J={t_J}; \Phi={np.round(Phi, 2)}$')
 #plt.plot(probability_density[10,:,0])
 plt.tight_layout()
+
 #%% Energies
-ax2 = fig.add_axes([0.3, 0.3, 0.25, 0.25])
+ax2 = fig.add_axes([0.15, 0.15, 0.25, 0.25])
 ax2.scatter(np.arange(0, 4*L_x*L_y, 1), eigenvalues)
 ax2.set_xlim([2*(L_x*L_y-5), 2*(L_x*L_y+5)])
 ax2.set_ylim([-0.05, 0.05])
 
 #%% Spin determination
-from functions import mean_spin, mean_spin_xy, get_components
+from functions import mean_spin_xy, get_components
 
-index = 2 #which zero mode
 zero_modes = eigenvectors[:, 2*(L_x*L_y-1):2*(L_x*L_y+1)]      #4 (2) modes with zero energy (with Zeeman)
 creation_up, creation_down, destruction_down, destruction_up = get_components(zero_modes[:,index], L_x, L_y)
 zero_plus_state = np.stack((destruction_up, destruction_down, creation_down, creation_up), axis=2) #positive energy eigenvector splitted in components
-corner_state = zero_plus_state[L_x-2, L_y//2, :].reshape(4,1)  #positive energy point state localized at the junction
-corner_state_normalized = corner_state/np.linalg.norm(corner_state[:2]) #normalization with only particle part
+# corner_state = zero_plus_state[L_x-2, L_y//2, :].reshape(4,1)  #positive energy point state localized at the junction
+# corner_state_normalized = corner_state/np.linalg.norm(corner_state[:2]) #normalization with only particle part
 zero_plus_state_normalized = zero_plus_state/np.linalg.norm(zero_plus_state[:,:,:2], axis=2, keepdims=True)
 
 # Spin mean value
-spin_mean_value = mean_spin(corner_state_normalized)
+# spin_mean_value = mean_spin(corner_state_normalized)
 
 spin = mean_spin_xy(zero_plus_state_normalized)
 # fig, ax = plt.subplots()
@@ -78,20 +77,24 @@ fig, ax = plt.subplots()
 image = ax.imshow(spin[:,:,2], cmap="Blues", origin="lower") #I have made the transpose and changed the origin to have xy axes as usually
 plt.colorbar(image)
 #%% Phi spectrum
+"""
 from functions import phi_spectrum
 
-Phi_values = np.linspace(0, np.pi, 50)
-phi_energy = phi_spectrum(Hamiltonian_A1u_S, Phi_values, t, mu, L_x, L_y, Delta, t_J)
+Phi_values = np.linspace(0, np.pi, 100)
+phi_energy = phi_spectrum(Hamiltonian_A1u_A1u_junction, Phi_values, t, mu, L_x, L_y, Delta, t_J)
 
 fig, ax = plt.subplots()
 ax.plot(Phi_values, phi_energy)
 ax.set_xlabel(r"$\phi$")
 ax.set_ylabel("E")
+"""
 #%% Save
-
-np.savez("../Variables/Hoti/A1u_S_junction.npz", eigenvalues=eigenvalues, eigenvectors=eigenvectors,
+"""
+np.savez(f"../Variables/Hoti/A1u_A1u_junction_Phi_{np.round(Phi,2)}_Lx_{L_x}_index_{index}.npz", eigenvalues=eigenvalues, eigenvectors=eigenvectors,
                                      L_x=L_x, L_y=L_y, t=t, mu=mu, Delta=Delta, t_J=t_J,
                                      probability_density_2D=probability_density_2D,
                                      spin=spin, Phi=Phi,
-                                     phi_energy=phi_energy,
-                                     Phi_values=Phi_values)
+                                     #phi_energy=phi_energy,
+                                     #Phi_values=Phi_values,
+                                     index=index)
+"""
