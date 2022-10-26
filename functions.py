@@ -57,3 +57,39 @@ def mean_spin_xy(state):
             for k in range(3):
                 spin_mean_value[i, j, k] = mean_spin(np.reshape(state[i,j,:], (4,1)))[k][0]
     return spin_mean_value
+
+def get_components(state, L_x, L_y):
+    """
+    Get the components of components of the state: creation_up,
+    creation_down, destruction_down, destruction_up for a given
+    column state. Returns an array of shape (L_y, L_x)
+    """
+    destruction_up = state[0::4].reshape((L_x, L_y))
+    destruction_down = state[1::4].reshape((L_x, L_y))
+    creation_down = state[2::4].reshape((L_x, L_y))
+    creation_up = state[3::4].reshape((L_x, L_y))
+    return (np.flip(creation_up.T, axis=0),
+            np.flip(creation_down.T, axis=0),
+            np.flip(destruction_down.T, axis=0),
+            np.flip(destruction_up.T, axis=0))
+
+def probability_density(Hamiltonian, L_x, L_y, index):
+    """
+    Returns the probability density of a 2D system given a matrix Hamiltonian and the index of the zero mode (0<=index<=3).
+    The matrix element order are analogous to the real space grid.
+    """
+    eigenvalues, eigenvectors = np.linalg.eigh(Hamiltonian)
+    zero_modes = eigenvectors[:, 2*(L_x*L_y-1):2*(L_x*L_y+1)]      #4 (2) modes with zero energy (with Zeeman)
+    a, b, c, d = get_components(zero_modes[:,index], L_x, L_y)
+    probability_density = np.abs(a)**2 + np.abs(b)**2 + np.abs(c)**2 + np.abs(d)**2
+    return probability_density, eigenvalues, eigenvectors
+
+def phi_spectrum(Hamiltonian, Phi, t, mu, L_x, L_y, Delta, t_J):
+    """
+    Returns the phi spectrum for the six lowest energies.
+    """
+    energies = []
+    for Phi_value in Phi:
+        eigenvalues = np.linalg.eigvalsh(Hamiltonian(t=t, mu=mu, L_x=L_x, L_y=L_y, Delta=Delta, t_J=t_J, Phi=Phi_value))
+        energies.append(eigenvalues[2*(L_x*L_y-3):2*(L_x*L_y+3)])
+    return energies
