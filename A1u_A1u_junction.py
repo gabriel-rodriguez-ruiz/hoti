@@ -11,12 +11,12 @@ import matplotlib.pyplot as plt
 from hamiltonians import Hamiltonian_A1u_A1u_junction
 from functions import probability_density
 
-L_x = 60
-L_y = 30
+L_x = 40
+L_y = 20
 t = 1
 Delta = 1
-mu = -2
-Phi = 3*np.pi/4   #superconducting phase
+mu = -2  #-2
+Phi = 0   #superconducting phase
 t_J = 1    #t/2
 index = 0   #which zero mode
 H = Hamiltonian_A1u_A1u_junction(t=t, mu=mu, L_x=L_x, L_y=L_y, Delta=Delta, t_J=t_J, Phi=Phi)
@@ -77,17 +77,15 @@ fig, ax = plt.subplots()
 image = ax.imshow(spin[:,:,2], cmap="Blues", origin="lower") #I have made the transpose and changed the origin to have xy axes as usually
 plt.colorbar(image)
 #%% Phi spectrum
-"""
 from functions import phi_spectrum
 
-Phi_values = np.linspace(0, np.pi, 100)
+Phi_values = np.linspace(0, np.pi, 50)
 phi_energy = phi_spectrum(Hamiltonian_A1u_A1u_junction, Phi_values, t, mu, L_x, L_y, Delta, t_J)
 
 fig, ax = plt.subplots()
 ax.plot(Phi_values, phi_energy)
 ax.set_xlabel(r"$\phi$")
 ax.set_ylabel("E")
-"""
 #%% Save
 """
 np.savez(f"../Variables/Hoti/A1u_A1u_junction_Phi_{np.round(Phi,2)}_Lx_{L_x}_index_{index}.npz", eigenvalues=eigenvalues, eigenvectors=eigenvectors,
