@@ -210,7 +210,7 @@ def Hamiltonian_ZKM_semi_infinite(k, t, mu, L_x, Delta_0, Delta_1, Lambda):
             -2\lambda\sin(k)\tau_z\sigma_x \right]\vec{c}_n+
             \sum_{n=1}^{L_x-1}             
             \left[
-            \vec{c}^\dagger_n(-t\tau_z\sigma_0-i\lambda\tau_z\sigma_y + \Delta_1\tau_x\sigma_0 )\vec{c}_{n+1}
+            \vec{c}^\dagger_n(-t\tau_z\sigma_0-i\lambda\tau_z\sigma_z + \Delta_1\tau_x\sigma_0 )\vec{c}_{n+1}
             + H.c.
             \right]
             
@@ -226,7 +226,7 @@ def Hamiltonian_ZKM_semi_infinite(k, t, mu, L_x, Delta_0, Delta_1, Lambda):
         for alpha in range(4):
             for beta in range(4):
                 M[index_semi_infinite(i, alpha, L_x), index_semi_infinite(i, beta, L_x)] = onsite[alpha, beta] 
-    hopping = -t * np.kron(tau_z, sigma_0) - 1j*Lambda * np.kron(tau_z, sigma_y) + Delta_1*np.kron(tau_x, sigma_0)
+    hopping = -t * np.kron(tau_z, sigma_0) - 1j*Lambda * np.kron(tau_z, sigma_z) + Delta_1*np.kron(tau_x, sigma_0)
     for i in range(1, L_x):
         for alpha in range(4):
             for beta in range(4):
