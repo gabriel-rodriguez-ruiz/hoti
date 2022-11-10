@@ -16,12 +16,13 @@ L_y = 20
 t = 1
 Delta = 1
 mu = -2  #-2
-Phi = 0   #superconducting phase
+Phi = np.pi/2   #superconducting phase
 t_J = 1    #t/2
 index = 0   #which zero mode
 H = Hamiltonian_A1u_A1u_junction(t=t, mu=mu, L_x=L_x, L_y=L_y, Delta=Delta, t_J=t_J, Phi=Phi)
 probability_density_2D, eigenvalues, eigenvectors = probability_density(H, L_x, L_y, index=index)
 
+#%%
 fig, ax = plt.subplots()
 image = ax.imshow(probability_density_2D, cmap="Blues", origin="lower") #I have made the transpose and changed the origin to have xy axes as usually
 plt.colorbar(image)
@@ -69,7 +70,7 @@ u = spin[:, :, 0]   #x component
 v = spin[:, :, 1]   #y component
 
 # Plotting Vector Field with QUIVER
-ax.quiver(x, y, u, v, color='r')
+ax.quiver(x, y, u, v, color='r', angles='uv', scale_units='xy', scale=1)
 ax.set_title('Spin Field in the plane')
 
 #%% Spin in z
