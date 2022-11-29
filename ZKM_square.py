@@ -11,7 +11,7 @@ from hamiltonians import Hamiltonian_ZKM, Zeeman
 from functions import probability_density
 
 L_x = 20
-L_y = 80
+L_y = 40
 t = 1
 mu = -2*t   # mu=t*Delta_0/Delta_1
 Delta_Z = 0  # 0.2
@@ -77,7 +77,7 @@ u = spin[:, :, 0]   #x component
 v = spin[:, :, 1]   #y component
 
 # Plotting Vector Field with QUIVER
-ax.quiver(x, y, u, v, color='r',angles='xy', scale_units='xy', scale=1)
+ax.quiver(x, y, u, v, color='r',angles='uv', scale_units='xy', scale=1)
 ax.set_title('Spin Field in the plane')
 
 #%% Spin in z
@@ -85,15 +85,3 @@ fig, ax = plt.subplots()
 ax.set_title("Spin in z")
 image = ax.imshow(spin[:,:,2], cmap="Blues", origin="lower") #I have made the transpose and changed the origin to have xy axes as usually
 plt.colorbar(image)
-
-fig, ax = plt.subplots()
-ax.set_title("Spin in z")
-ax.plot(spin[:,L_x-1,2])
-
-fig, ax = plt.subplots()
-ax.set_title("Spin in x")
-ax.plot(spin[:,L_x-1,0])
-
-fig, ax = plt.subplots()
-ax.set_title("Spin in y")
-ax.plot(spin[:,L_x-1,1])

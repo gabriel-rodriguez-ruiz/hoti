@@ -52,7 +52,7 @@ def mean_spin(state):
     spin_mean_value = np.concatenate([state.T.conj()@S_x@state,
                                       state.T.conj()@S_y@state,
                                       state.T.conj()@S_z@state])
-    return np.real(spin_mean_value)
+    return np.real(spin_mean_value/np.linalg.norm(spin_mean_value))
 
 def mean_spin_xy(state):
     N_x, N_y, N_z = np.shape(state)     #N_z is always 4
@@ -84,8 +84,8 @@ def probability_density(Hamiltonian, L_x, L_y, index):
     The matrix element order are analogous to the real space grid.
     """
     eigenvalues, eigenvectors = np.linalg.eigh(Hamiltonian)
-    zero_modes = eigenvectors[:, 2*(L_x*L_y-1):2*(L_x*L_y+1)]      #4 (2) modes with zero energy (with Zeeman)
-    a, b, c, d = get_components(zero_modes[:,index], L_x, L_y)
+    #zero_modes = eigenvectors[:, 2*(L_x*L_y-1):2*(L_x*L_y+1)]      #4 (2) modes with zero energy (with Zeeman)
+    a, b, c, d = get_components(eigenvectors[:,2*(L_x*L_y-1)+index], L_x, L_y)
     probability_density = np.abs(a)**2 + np.abs(b)**2 + np.abs(c)**2 + np.abs(d)**2
     return probability_density, eigenvalues, eigenvectors
 

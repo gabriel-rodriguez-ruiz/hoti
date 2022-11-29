@@ -74,6 +74,31 @@ ax.plot(k_values, delta_l_k, ".", label=r"$\delta_{l,k}$")
 ax.plot(k_values, delta_r_k, ".", label=r"$\delta_{r,k}$")
 ax.plot(k_values, theta_l_k, "-", label=r"$\theta_k$")
 ax.legend()
+ax.text(0,3,f"$\phi_l=${phi_l_k[1].round(2)}")
+ax.set_xlabel("k")
 
 versor = [np.cos(phi_l_k[1]), np.sin(phi_l_k[1]),0]
-spin = mean_spin((left_minus[0:4]/(2*np.abs(left_minus[0:4]))).reshape((4,1)))
+ax.arrow(0,0,versor[0]/10, versor[1]/10)
+spin = mean_spin((left_minus[0:4]/(np.linalg.norm(left_minus[0:4]))/np.sqrt(2)).reshape((4,1)))
+
+spin = []
+k_value = 0.1*np.pi
+for i in range(L_x):
+    spin.append(mean_spin(left_minus[4*i:4*(i+1)].reshape((4,1))))
+
+spin_x = [spin[i][0] for i in range(L_x)]
+spin_y = [spin[i][1] for i in range(L_x)]
+spin_z = [spin[i][2] for i in range(L_x)]
+
+x, y = np.meshgrid(1, np.linspace(0, L_x-1, L_x))
+
+
+  
+# Directional vectors
+u = spin_x   #x component
+v = spin_y   #y component
+
+# Plotting Vector Field with QUIVER
+fig, ax = plt.subplots()
+ax.quiver(x, y, u, v, color='r',angles='uv')
+ax.set_title('Spin Field in the line')
