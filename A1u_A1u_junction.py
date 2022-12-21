@@ -12,13 +12,13 @@ from hamiltonians import Hamiltonian_A1u_A1u_junction
 from functions import probability_density, get_components
 
 L_x = 60
-L_y = 40
+L_y = 30
 t = 1
 Delta = 1
 mu = -1  #-2
 Phi = np.pi/2   #superconducting phase
 t_J = 1    #t/2
-index = -1   #which zero mode
+index = 0   #which zero mode
 H = Hamiltonian_A1u_A1u_junction(t=t, mu=mu, L_x=L_x, L_y=L_y, Delta=Delta, t_J=t_J, Phi=Phi)
 probability_density_2D, eigenvalues, eigenvectors = probability_density(H, L_x, L_y, index=index)
 
