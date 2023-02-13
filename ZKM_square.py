@@ -54,12 +54,12 @@ creation_up, creation_down, destruction_down, destruction_up = get_components(ze
 zero_plus_state = np.stack((destruction_up, destruction_down, creation_down, creation_up), axis=2) #positive energy eigenvector splitted in components
 # corner_state = zero_plus_state[L_x-2, L_y//2, :].reshape(4,1)  #positive energy point state localized at the junction
 # corner_state_normalized = corner_state/np.linalg.norm(corner_state[:2]) #normalization with only particle part
-zero_plus_state_normalized = zero_plus_state/np.linalg.norm(zero_plus_state[:,:,:2], axis=2, keepdims=True)
+#zero_plus_state_normalized = zero_plus_state/np.linalg.norm(zero_plus_state[:,:,:2], axis=2, keepdims=True)
 
 # Spin mean value
 # spin_mean_value = mean_spin(corner_state_normalized)
 
-spin = mean_spin_xy(zero_plus_state_normalized)
+spin = mean_spin_xy(zero_plus_state)
 # fig, ax = plt.subplots()
 # image = ax.imshow(spin[:,:,2].T, cmap="Blues", origin="lower") #I have made the transpose and changed the origin to have xy axes as usually
 # plt.colorbar(image)

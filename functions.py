@@ -52,7 +52,8 @@ def mean_spin(state):
     spin_mean_value = np.concatenate([state.T.conj()@S_x@state,
                                       state.T.conj()@S_y@state,
                                       state.T.conj()@S_z@state])
-    return np.real(spin_mean_value/np.linalg.norm(spin_mean_value))
+    # return np.real(spin_mean_value/np.linalg.norm(spin_mean_value))
+    return np.real(spin_mean_value)
 
 def mean_spin_xy(state):
     N_x, N_y, N_z = np.shape(state)     #N_z is always 4

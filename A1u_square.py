@@ -16,7 +16,7 @@ t = 1
 Delta = 1
 mu = -2
 
-Delta_Z = 0   #0.2
+Delta_Z = 0.2   #0.2
 
 H = Hamiltonian_A1u(t=t, mu=mu, L_x=L_x, L_y=L_y, Delta=Delta)
 probability_density_2D, eigenvalues, eigenvectors = probability_density(H, L_x, L_y, index=2)
@@ -51,9 +51,9 @@ corner_state_normalized = corner_state/np.linalg.norm(corner_state[:2]) #normali
 zero_plus_state_normalized = zero_plus_state/np.linalg.norm(zero_plus_state[:,:,:2], axis=2, keepdims=True)
 
 # Spin mean value
-spin_mean_value = mean_spin(corner_state_normalized)
+spin_mean_value = mean_spin(corner_state)
 
-spin = mean_spin_xy(zero_plus_state_normalized)
+spin = mean_spin_xy(zero_plus_state)
 # fig, ax = plt.subplots()
 # image = ax.imshow(spin[:,:,2].T, cmap="Blues", origin="lower") #I have made the transpose and changed the origin to have xy axes as usually
 # plt.colorbar(image)
